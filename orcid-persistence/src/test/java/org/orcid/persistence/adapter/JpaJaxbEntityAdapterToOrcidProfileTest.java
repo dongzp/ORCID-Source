@@ -179,7 +179,7 @@ public class JpaJaxbEntityAdapterToOrcidProfileTest extends DBUnitTest {
         checkOrcidWorks(orcidProfile.retrieveOrcidWorks());
         checkOrcidGrants(orcidProfile.retrieveOrcidGrants());
         checkOrcidPatents(orcidProfile.retrieveOrcidPatents());
-        assertEquals("4444-4444-4444-4443", orcidProfile.getOrcid().getValue());
+        assertEquals("http://orcid.org/4444-4444-4444-4443", orcidProfile.getOrcidId());
 
         assertNotNull(orcidProfile.getOrcidInternal());
         checkOrcidInternal(orcidProfile.getOrcidInternal());

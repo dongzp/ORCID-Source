@@ -16,13 +16,21 @@
  */
 package org.orcid.core.oauth.service;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+
+import javax.annotation.Resource;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.orcid.core.manager.ProfileEntityManager;
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.core.oauth.OrcidProfileUserDetails;
-import org.orcid.jaxb.model.message.Orcid;
 import org.orcid.jaxb.model.message.OrcidProfile;
 import org.orcid.test.DBUnitTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,13 +46,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-
-import static org.junit.Assert.assertNotNull;
-
 /**
  * 2011-2012 ORCID
  * 
@@ -59,6 +60,9 @@ public class OrcidAuthorizationCodeServiceTest extends DBUnitTest {
 
     @Resource(name = "profileEntityManager")
     private ProfileEntityManager profileEntityManager;
+
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
 
     @BeforeClass
     public static void initDBUnitData() throws Exception {
@@ -101,7 +105,7 @@ public class OrcidAuthorizationCodeServiceTest extends DBUnitTest {
 
         AuthorizationRequest authorizationRequest = new AuthorizationRequest(clientId, Arrays.asList("a-scope"), grantedAuthorities, Arrays.asList("orcid"));
         OrcidProfile profile = new OrcidProfile();
-        profile.setOrcid(new Orcid("4444-4444-4444-4445"));
+        profile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId("4444-4444-4444-4445"));
         OrcidProfileUserDetails details = new OrcidProfileUserDetails(profile);
         Authentication userAuthentication = new UsernamePasswordAuthenticationToken(details, "password");
 

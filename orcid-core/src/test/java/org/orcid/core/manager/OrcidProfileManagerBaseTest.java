@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.mockito.Mock;
 import org.orcid.core.BaseTest;
 import org.orcid.core.manager.impl.OrcidProfileManagerImpl;
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.jaxb.model.message.Address;
 import org.orcid.jaxb.model.message.Affiliation;
 import org.orcid.jaxb.model.message.AffiliationType;
@@ -101,6 +102,9 @@ public class OrcidProfileManagerBaseTest extends BaseTest {
     @Resource
     protected GenericDao<SubjectEntity, String> subjectDao;
 
+    @Resource
+    protected OrcidUrlManager orcidUrlManager;
+
     @Mock
     protected OrcidIndexManager orcidIndexManager;
 
@@ -129,7 +133,7 @@ public class OrcidProfileManagerBaseTest extends BaseTest {
         OrcidProfile profile2 = new OrcidProfile();
         profile2.setPassword("password");
         profile2.setVerificationCode("1234");
-        profile2.setOrcid(TEST_ORCID);
+        profile2.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(TEST_ORCID));
         OrcidBio bio = new OrcidBio();
         ContactDetails contactDetails = new ContactDetails();
         contactDetails.addOrReplacePrimaryEmail(new Email("will@orcid.org"));
@@ -158,7 +162,7 @@ public class OrcidProfileManagerBaseTest extends BaseTest {
         profile.setVerificationCode("1234");
         profile.setSecurityQuestionAnswer("random answer");
 
-        profile.setOrcid(TEST_ORCID);
+        profile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(TEST_ORCID));
         OrcidBio bio = new OrcidBio();
         ContactDetails contactDetails = new ContactDetails();
         contactDetails.addOrReplacePrimaryEmail(new Email("will@semantico.com"));

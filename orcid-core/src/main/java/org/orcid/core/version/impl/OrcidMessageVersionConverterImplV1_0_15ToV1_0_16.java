@@ -16,6 +16,9 @@
  */
 package org.orcid.core.version.impl;
 
+import javax.annotation.Resource;
+
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.core.version.OrcidMessageVersionConverter;
 import org.orcid.jaxb.model.message.Orcid;
 import org.orcid.jaxb.model.message.OrcidMessage;
@@ -29,6 +32,9 @@ import org.orcid.jaxb.model.message.OrcidSearchResults;
  * 
  */
 public class OrcidMessageVersionConverterImplV1_0_15ToV1_0_16 implements OrcidMessageVersionConverter {
+
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
 
     private static final String FROM_VERSION = "1.0.15";
     private static final String TARGET_VERSION = "1.0.16";
@@ -73,6 +79,11 @@ public class OrcidMessageVersionConverterImplV1_0_15ToV1_0_16 implements OrcidMe
 
     private void upgradeProfile(OrcidProfile orcidProfile) {
         if (orcidProfile != null) {
+            Orcid orcid = orcidProfile.getOrcid();
+            String orcidId = orcidProfile.getOrcidId();
+            if (orcidId == null && !(orcid == null)) {
+                orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(orcid.getValue()));
+            }
             orcidProfile.setOrcid((Orcid) null);
         }
     }

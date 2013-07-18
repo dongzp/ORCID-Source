@@ -163,7 +163,7 @@ public class NotificationManagerImpl implements NotificationManager {
 
         String emailFriendlyName = deriveEmailFriendlyName(orcidToDeactivate);
         templateParams.put("emailName", emailFriendlyName);
-        templateParams.put("orcid", orcidToDeactivate.getOrcid().getValue());
+        templateParams.put("orcid", orcidToDeactivate.extractOrcidNumber());
         templateParams.put("baseUri", baseUri);
         templateParams.put("deactivateUrlEndpoint", "/account/confirm-deactivate-orcid");
 
@@ -191,7 +191,7 @@ public class NotificationManagerImpl implements NotificationManager {
         templateParams.put("emailName", emailFriendlyName);
         String verificationUrl = createVerificationUrl(email, baseUri);
         templateParams.put("verificationUrl", verificationUrl);
-        templateParams.put("orcid", orcidProfile.getOrcid().getValue());
+        templateParams.put("orcid", orcidProfile.extractOrcidNumber());
         templateParams.put("baseUri", baseUri);
       
         addMessageParams(templateParams);
@@ -222,7 +222,7 @@ public class NotificationManagerImpl implements NotificationManager {
         templateParams.put("emailName", emailFriendlyName);
         String verificationUrl = createVerificationUrl(email, baseUri);
         templateParams.put("verificationUrl", verificationUrl);
-        templateParams.put("orcid", orcidProfile.getOrcid().getValue());
+        templateParams.put("orcid", orcidProfile.extractOrcidNumber());
         templateParams.put("baseUri", baseUri);
         
         addMessageParams(templateParams);
@@ -262,7 +262,7 @@ public class NotificationManagerImpl implements NotificationManager {
         // Create map of template params
         Map<String, Object> templateParams = new HashMap<String, Object>();
         templateParams.put("emailName", deriveEmailFriendlyName(orcidProfile));
-        templateParams.put("orcid", orcidProfile.getOrcid().getValue());
+        templateParams.put("orcid", orcidProfile.extractOrcidNumber());
         templateParams.put("baseUri", baseUri);
         // Generate body from template
         String resetUrl = createResetEmail(orcidProfile, baseUri);
@@ -289,7 +289,7 @@ public class NotificationManagerImpl implements NotificationManager {
             LOGGER.debug("Not sending amend email, because amender is null: {}", amendedProfile);
             return;
         }
-        if (amenderOrcid.equals(amendedProfile.getOrcid().getValue())) {
+        if (amenderOrcid.equals(amendedProfile.extractOrcidNumber())) {
             LOGGER.debug("Not sending amend email, because self edited: {}", amendedProfile);
             return;
         }
@@ -305,7 +305,7 @@ public class NotificationManagerImpl implements NotificationManager {
         // Create map of template params
         Map<String, Object> templateParams = new HashMap<String, Object>();
         templateParams.put("emailName", deriveEmailFriendlyName(amendedProfile));
-        templateParams.put("orcid", amendedProfile.getOrcid().getValue());
+        templateParams.put("orcid", amendedProfile.extractOrcidNumber());
         templateParams.put("amenderName", extractAmenderName(amendedProfile, amenderOrcid));
         templateParams.put("baseUri", baseUri);
         
@@ -346,7 +346,7 @@ public class NotificationManagerImpl implements NotificationManager {
                     .getDelegateSummary().getCreditName().getContent() : LAST_RESORT_ORCID_USER_EMAIL_NAME;
 
             templateParams.put("emailNameForDelegate", emailNameForDelegate);
-            templateParams.put("grantingOrcidValue", orcidUserGrantingPermission.getOrcid().getValue());
+            templateParams.put("grantingOrcidValue", orcidUserGrantingPermission.extractOrcidNumber());
             templateParams.put("grantingOrcidName", deriveEmailFriendlyName(orcidUserGrantingPermission));
             templateParams.put("baseUri", baseUri);
             // templateParams.put("grantingOrcidEmail", grantingOrcidEmail);
@@ -379,7 +379,7 @@ public class NotificationManagerImpl implements NotificationManager {
         templateParams.put("verificationUrl", verificationUrl);
         templateParams.put("oldEmail", oldEmail.getValue());
         templateParams.put("newEmail", updatedProfile.getOrcidBio().getContactDetails().retrievePrimaryEmail().getValue());
-        templateParams.put("orcid", updatedProfile.getOrcid().getValue());
+        templateParams.put("orcid", updatedProfile.extractOrcidNumber());
         templateParams.put("baseUri", baseUri);
         
         addMessageParams(templateParams);
@@ -397,7 +397,7 @@ public class NotificationManagerImpl implements NotificationManager {
         // Create map of template params
         Map<String, Object> templateParams = new HashMap<String, Object>();
         templateParams.put("emailName", deriveEmailFriendlyName(createdProfile));
-        templateParams.put("orcid", createdProfile.getOrcid().getValue());
+        templateParams.put("orcid", createdProfile.extractOrcidNumber());
         Source source = createdProfile.getOrcidHistory().getSource();
         templateParams.put("creatorName", source == null ? "" : source.getSourceName().getContent());
         templateParams.put("baseUri", baseUri);
@@ -427,7 +427,7 @@ public class NotificationManagerImpl implements NotificationManager {
         // Create map of template params
         Map<String, Object> templateParams = new HashMap<String, Object>();
         templateParams.put("emailName", deriveEmailFriendlyName(orcidProfile));
-        String orcid = orcidProfile.getOrcid().getValue();
+        String orcid = orcidProfile.extractOrcidNumber();
         templateParams.put("orcid", orcid);
         Source source = orcidProfile.getOrcidHistory().getSource();
         templateParams.put("creatorName", source == null ? "" : source.getSourceName().getContent());

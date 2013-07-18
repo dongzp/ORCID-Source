@@ -78,6 +78,7 @@ import org.orcid.pojo.ChangePassword;
 import org.orcid.pojo.SecurityQuestion;
 import org.orcid.pojo.ajaxForm.Emails;
 import org.orcid.pojo.ajaxForm.Errors;
+import org.orcid.utils.OrcidStringUtils;
 import org.orcid.utils.OrcidWebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -260,7 +261,7 @@ public class ManageProfileController extends BaseWorkspaceController {
         LOGGER.debug("Got current affiliations: {}", currentAffiliationsForm);
         // XXX Use T2 API
         orcidProfileManager.updateAffiliations(currentAffiliationsForm.getOrcidProfile());
-        OrcidProfile profile = orcidProfileManager.retrieveOrcidProfile(currentAffiliationsForm.getOrcid());
+        OrcidProfile profile = orcidProfileManager.retrieveOrcidProfile(OrcidStringUtils.getOrcidNumber(currentAffiliationsForm.getOrcidId()));
         getCurrentUser().setEffectiveProfile(profile);
         ModelAndView affiliationsView = manageProfile("affiliations-tab");
         affiliationsView.addObject("affiliationsSuccessfullyUpdated", true);
@@ -323,7 +324,7 @@ public class ManageProfileController extends BaseWorkspaceController {
         OrcidProfile orcidProfile = getCurrentUser().getEffectiveProfile();
         List<String> orcidsToExclude = new ArrayList<String>();
         // Exclude myself
-        orcidsToExclude.add(orcidProfile.getOrcid().getValue());
+        orcidsToExclude.add(orcidProfile.extractOrcidNumber());
         // Exclude profiles I've already delegated to
         Delegation delegation = orcidProfile.getOrcidBio().getDelegation();
         if (delegation != null) {
@@ -470,7 +471,7 @@ public class ManageProfileController extends BaseWorkspaceController {
         // TODO - placeholder just to test the retrieve etc..replace with only
         // fields that we will populate
         // password fields are never populated
-        OrcidProfile unecryptedProfile = orcidProfileManager.retrieveOrcidProfile(profile.getOrcid().getValue());
+        OrcidProfile unecryptedProfile = orcidProfileManager.retrieveOrcidProfile(profile.extractOrcidNumber());
         ManagePasswordOptionsForm managePasswordOptionsForm = new ManagePasswordOptionsForm();
         managePasswordOptionsForm.setVerificationNumber(unecryptedProfile.getVerificationCode());
         managePasswordOptionsForm.setSecurityQuestionAnswer(unecryptedProfile.getSecurityQuestionAnswer());
@@ -812,7 +813,7 @@ public class ManageProfileController extends BaseWorkspaceController {
             emails.add(email);
             currentProfile.getOrcidBio().getContactDetails().setEmail(emails);
             email.setSource(getRealUserOrcid());
-            emailManager.addEmail(currentProfile.getOrcid().getValue(), email);
+            emailManager.addEmail(currentProfile.extractOrcidNumber(), email);
 
             // send verifcation email for new address
             URI baseUri = OrcidWebUtils.getServerUriWithContextPath(request);
@@ -858,7 +859,7 @@ public class ManageProfileController extends BaseWorkspaceController {
                 }
             }
             currentProfile.getOrcidBio().getContactDetails().setEmail(emails);
-            emailManager.removeEmail(currentProfile.getOrcid().getValue(), email.getValue());
+            emailManager.removeEmail(currentProfile.extractOrcidNumber(), email.getValue());
         }
         return email;
     }
@@ -896,7 +897,7 @@ public class ManageProfileController extends BaseWorkspaceController {
         emails.setErrors(allErrors);
         if (allErrors.size() == 0) {
             currentProfile.getOrcidBio().getContactDetails().setEmail((List<Email>) (Object) emails.getEmails());
-            emailManager.updateEmails(currentProfile.getOrcid().getValue(), currentProfile.getOrcidBio().getContactDetails().getEmail());
+            emailManager.updateEmails(currentProfile.extractOrcidNumber(), currentProfile.getOrcidBio().getContactDetails().getEmail());
             if (newPrime != null && !newPrime.getValue().equalsIgnoreCase(oldPrime.getValue())) {
                 URI baseUri = OrcidWebUtils.getServerUriWithContextPath(request);
                 notificationManager.sendEmailAddressChangedNotification(currentProfile, new Email(oldPrime.getValue()), baseUri);
@@ -927,7 +928,7 @@ public class ManageProfileController extends BaseWorkspaceController {
         // Update profile on database
         profileEntityManager.updateProfile(profile);
 
-        String orcid = profile.getOrcid().getValue();
+        String orcid = profile.extractOrcidNumber();
 
         // Update other names on database
         OtherNames otherNames = profile.getOrcidBio().getPersonalDetails().getOtherNames();

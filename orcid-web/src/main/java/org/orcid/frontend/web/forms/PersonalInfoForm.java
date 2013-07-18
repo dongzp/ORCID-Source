@@ -58,7 +58,7 @@ public class PersonalInfoForm {
 
     private String creditName;
 
-    private String orcid;
+    private String orcidId;
 
     private boolean otherNamesPublic;
 
@@ -105,13 +105,13 @@ public class PersonalInfoForm {
 
     public PersonalInfoForm(OrcidProfile orcidProfile, Map<String, String> availableSubjects) {
         availableRemainingSubjectMap = availableSubjects;
-        orcid = orcidProfile.getOrcid().getValue();
+        orcidId = orcidProfile.extractOrcidNumber();
 
         OrcidBio orcidBio = orcidProfile.getOrcidBio();
         PersonalDetails personalDetails = null;
         ContactDetails contactDetails = null;
         Keywords keywords = null;
-        // Get current researcher subjects from profile     
+        // Get current researcher subjects from profile
         Biography profileShortDescription = null;
         if (orcidBio != null) {
             personalDetails = orcidBio.getPersonalDetails();
@@ -124,10 +124,12 @@ public class PersonalInfoForm {
         GivenNames profileGivenNames = personalDetails != null ? personalDetails.getGivenNames() : null;
         givenNames = profileGivenNames == null ? null : profileGivenNames.getContent();
 
-        //        Visibility personalVisibility = (personalDetails != null && personalDetails.getVisibility() != null) ? personalDetails.getVisibility()
-        //                : OrcidVisibilityDefaults.PERSONAL_DETAILS_DEFAULT.getVisibility();
+        // Visibility personalVisibility = (personalDetails != null &&
+        // personalDetails.getVisibility() != null) ?
+        // personalDetails.getVisibility()
+        // : OrcidVisibilityDefaults.PERSONAL_DETAILS_DEFAULT.getVisibility();
         //
-        //        masterPublic = personalVisibility.equals(Visibility.PUBLIC);
+        // masterPublic = personalVisibility.equals(Visibility.PUBLIC);
 
         FamilyName profileFamilyName = personalDetails != null ? personalDetails.getFamilyName() : null;
         familyName = profileFamilyName == null ? null : profileFamilyName.getContent();
@@ -136,8 +138,7 @@ public class PersonalInfoForm {
         creditName = profileCreditName == null ? null : profileCreditName.getContent();
 
         Visibility otherNameVisibility = (personalDetails != null && personalDetails.getOtherNames() != null && personalDetails.getOtherNames().getVisibility() != null) ? personalDetails
-                .getOtherNames().getVisibility()
-                : OrcidVisibilityDefaults.OTHER_NAMES_DEFAULT.getVisibility();
+                .getOtherNames().getVisibility() : OrcidVisibilityDefaults.OTHER_NAMES_DEFAULT.getVisibility();
         otherNamesPublic = otherNameVisibility.equals(Visibility.PUBLIC);
 
         if (personalDetails != null && personalDetails.getOtherNames() != null) {
@@ -147,17 +148,22 @@ public class PersonalInfoForm {
         }
         ResearcherUrls researcherUrls = personalDetails != null ? orcidBio.getResearcherUrls() : null;
         /*
-        Visibility researcherUrlVisibility = (personalDetails != null && orcidBio.getResearcherUrls() != null && orcidBio.getResearcherUrls()
-                .getVisibility() != null) ? orcidBio().getVisibility() : OrcidVisibilityDefaults.RESEARCHER_URLS_DEFAULT.getVisibility();
-        researcherUrlsPublic = researcherUrlVisibility.equals(Visibility.PUBLIC);
+         * Visibility researcherUrlVisibility = (personalDetails != null &&
+         * orcidBio.getResearcherUrls() != null && orcidBio.getResearcherUrls()
+         * .getVisibility() != null) ? orcidBio().getVisibility() :
+         * OrcidVisibilityDefaults.RESEARCHER_URLS_DEFAULT.getVisibility();
+         * researcherUrlsPublic =
+         * researcherUrlVisibility.equals(Visibility.PUBLIC);
          */
         email = (contactDetails != null && contactDetails.getEmail() != null) ? contactDetails.retrievePrimaryEmail().getValue() : null;
         emailVisibility = (contactDetails != null && contactDetails.getEmail() != null && contactDetails.retrievePrimaryEmail().getVisibility() != null) ? contactDetails
                 .retrievePrimaryEmail().getVisibility().toString() : OrcidVisibilityDefaults.PRIMARY_EMAIL_DEFAULT.getVisibility().toString();
 
-        //   Visibility contactDetailsVisibility = (contactDetails != null && contactDetails.getEmail() != null) ? contactDetails.getEmail().getVisibility()
+        // Visibility contactDetailsVisibility = (contactDetails != null &&
+        // contactDetails.getEmail() != null) ?
+        // contactDetails.getEmail().getVisibility()
         // : OrcidVisibilityDefaults.CONTACT_DETAIL_DEFAULT.getVisibility();
-        //emailVisibility = contactDetailsVisibility.value();
+        // emailVisibility = contactDetailsVisibility.value();
 
         // Get keywords from profile
 
@@ -177,7 +183,7 @@ public class PersonalInfoForm {
 
     public OrcidProfile getOrcidProfile() {
         OrcidProfile profile = new OrcidProfile();
-        profile.setOrcid(orcid);
+        profile.setOrcidId(orcidId);
         OrcidBio bio = new OrcidBio();
         profile.setOrcidBio(bio);
         PersonalDetails personalDetails = new PersonalDetails();
@@ -185,7 +191,8 @@ public class PersonalInfoForm {
         personalDetails.setGivenNames(new GivenNames(givenNames));
         personalDetails.setFamilyName(new FamilyName(familyName));
         personalDetails.setCreditName(new CreditName(creditName));
-        //personalDetails.setVisibility(masterPublic ? Visibility.PUBLIC : Visibility.LIMITED);
+        // personalDetails.setVisibility(masterPublic ? Visibility.PUBLIC :
+        // Visibility.LIMITED);
 
         OtherNames otherNames = new OtherNames();
         otherNames.setVisibility(otherNamesPublic ? Visibility.PUBLIC : Visibility.LIMITED);
@@ -198,14 +205,17 @@ public class PersonalInfoForm {
             }
         }
 
-        //        ResearcherUrls researcherUrls = new ResearcherUrls();
-        //        researcherUrls.setVisibility(researcherUrlsPublic ? Visibility.PUBLIC : Visibility.LIMITED);
-        //        bio.setResearcherUrls(researcherUrls);
-        //        if (selectedResearcherUrls != null && !selectedResearcherUrls.isEmpty()) {
-        //            for (String url : selectedResearcherUrls) {
-        //                researcherUrls.getResearcherUrl().add(new ResearcherUrl(new Url(url)));
-        //            }
-        //        }
+        // ResearcherUrls researcherUrls = new ResearcherUrls();
+        // researcherUrls.setVisibility(researcherUrlsPublic ? Visibility.PUBLIC
+        // : Visibility.LIMITED);
+        // bio.setResearcherUrls(researcherUrls);
+        // if (selectedResearcherUrls != null &&
+        // !selectedResearcherUrls.isEmpty()) {
+        // for (String url : selectedResearcherUrls) {
+        // researcherUrls.getResearcherUrl().add(new ResearcherUrl(new
+        // Url(url)));
+        // }
+        // }
 
         ContactDetails contactDetails = new ContactDetails();
         Visibility emailVisibility = Visibility.fromValue(this.emailVisibility);
@@ -223,7 +233,8 @@ public class PersonalInfoForm {
         bio.setKeywords(keywords);
 
         ShortDescription description = new ShortDescription();
-        // description.setVisibility(shortDescriptionPublic ? Visibility.PUBLIC : Visibility.LIMITED);
+        // description.setVisibility(shortDescriptionPublic ? Visibility.PUBLIC
+        // : Visibility.LIMITED);
         bio.setBiography(new Biography(shortDescription));
         if (!StringUtils.isEmpty(shortDescription)) {
             description.setContent(shortDescription);
@@ -267,12 +278,12 @@ public class PersonalInfoForm {
         this.creditName = creditName;
     }
 
-    public String getOrcid() {
-        return orcid;
+    public String getOrcidId() {
+        return orcidId;
     }
 
-    public void setOrcid(String orcid) {
-        this.orcid = orcid;
+    public void setOrcidId(String orcidId) {
+        this.orcidId = orcidId;
     }
 
     public boolean isOtherNamesPublic() {

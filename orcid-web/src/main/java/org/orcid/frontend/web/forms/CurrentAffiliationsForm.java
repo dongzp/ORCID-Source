@@ -33,7 +33,7 @@ import java.util.List;
 
 public class CurrentAffiliationsForm {
 
-    private String orcid;
+    private String orcidId;
 
     private PrimaryInstitutionForm primaryInstitutionForm;
 
@@ -56,7 +56,7 @@ public class CurrentAffiliationsForm {
 
     public CurrentAffiliationsForm(OrcidProfile orcidProfile) {
         OrcidBio orcidBio = orcidProfile.getOrcidBio();
-        orcid = orcidProfile.getOrcid().getValue();
+        orcidId = orcidProfile.getOrcidId();
         primaryInstitutionForm = new PrimaryInstitutionForm(orcidProfile);
         jointAffiliationForm = new JointAffiliationForm(orcidProfile);
         pastInstitutionsForm = new PastInstitutionsForm(orcidProfile);
@@ -72,7 +72,7 @@ public class CurrentAffiliationsForm {
 
     public OrcidProfile getOrcidProfile() {
         OrcidProfile profile = new OrcidProfile();
-        profile.setOrcid(orcid);
+        profile.setOrcidId(orcidId);
         OrcidBio bio = new OrcidBio();
         profile.setOrcidBio(bio);
         Affiliation primaryInstitution = primaryInstitutionForm.getPrimaryInstitution();
@@ -102,12 +102,12 @@ public class CurrentAffiliationsForm {
         return profile;
     }
 
-    public String getOrcid() {
-        return orcid;
+    public String getOrcidId() {
+        return orcidId;
     }
 
-    public void setOrcid(String orcid) {
-        this.orcid = orcid;
+    public void setOrcidId(String orcidId) {
+        this.orcidId = orcidId;
     }
 
     @Valid

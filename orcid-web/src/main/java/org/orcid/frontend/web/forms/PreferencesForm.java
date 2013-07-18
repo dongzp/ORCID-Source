@@ -39,7 +39,7 @@ public class PreferencesForm {
     }
 
     public PreferencesForm(OrcidProfile orcidProfile) {
-        orcid = orcidProfile.getOrcid().getValue();
+        orcid = orcidProfile.extractOrcidNumber();
 
         OrcidInternal orcidInternal = orcidProfile.getOrcidInternal();
 

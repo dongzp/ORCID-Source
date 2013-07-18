@@ -29,8 +29,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import net.sf.cglib.core.Local;
-
 import org.apache.commons.lang.StringUtils;
 import org.orcid.jaxb.model.clientgroup.OrcidClient;
 import org.orcid.jaxb.model.clientgroup.OrcidClientGroup;
@@ -108,7 +106,6 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
 
         OrcidProfile profile = new OrcidProfile();
         OrcidType type = profileEntity.getOrcidType();
-        profile.setOrcid(profileEntity.getId());
         // we may just want an other property entry instead of baseUri
         profile.setOrcidId(baseUri.replace("https", "http") + "/" + profileEntity.getId());
         profile.setOrcidActivities(getOrcidActivities(profileEntity));
@@ -864,7 +861,7 @@ public class Jpa2JaxbAdapterImpl implements Jpa2JaxbAdapter {
 
         Preferences preferences = new Preferences();
         orcidInternal.setPreferences(preferences);
-        if (profileEntity.getLocale() == null) 
+        if (profileEntity.getLocale() == null)
             preferences.setLocale(Locale.EN);
         else
             preferences.setLocale(profileEntity.getLocale());

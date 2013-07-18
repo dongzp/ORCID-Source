@@ -72,7 +72,7 @@ public class OrcidIndexManagerImpl implements OrcidIndexManager {
         OrcidProfile filteredProfile = filteredMessage.getOrcidProfile();
 
         OrcidSolrDocument profileIndexDocument = new OrcidSolrDocument();
-        profileIndexDocument.setOrcid(filteredProfile.getOrcid().getValue());
+        profileIndexDocument.setOrcid(filteredProfile.extractOrcidNumber());
         OrcidBio orcidBio = filteredProfile.getOrcidBio();
         if (orcidBio != null) {
             PersonalDetails personalDetails = orcidBio.getPersonalDetails();
@@ -245,7 +245,7 @@ public class OrcidIndexManagerImpl implements OrcidIndexManager {
 
     @Override
     public void deleteOrcidProfile(OrcidProfile orcidProfile) {
-        deleteOrcidProfile(orcidProfile.getOrcid().getValue());
+        deleteOrcidProfile(orcidProfile.extractOrcidNumber());
 
     }
 

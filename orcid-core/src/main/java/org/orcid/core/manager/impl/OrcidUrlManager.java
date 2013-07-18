@@ -53,4 +53,8 @@ public class OrcidUrlManager {
         this.apiBaseUrl = apiBaseUrl;
     }
 
+    public String orcidNumberToOrcidId(String orcidNumber) {
+        return baseUrl.replace("https", "http") + "/" + orcidNumber;
+    }
+
 }

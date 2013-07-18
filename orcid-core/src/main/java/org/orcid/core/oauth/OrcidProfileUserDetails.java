@@ -81,7 +81,7 @@ public class OrcidProfileUserDetails implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return (realProfile.getOrcid() != null && StringUtils.isNotBlank(realProfile.getOrcid().getValue())) ? realProfile.getOrcid().getValue() : "";
+        return (realProfile.extractOrcidNumber() != null && StringUtils.isNotBlank(realProfile.extractOrcidNumber())) ? realProfile.extractOrcidNumber() : "";
     }
 
     /**
@@ -163,7 +163,7 @@ public class OrcidProfileUserDetails implements UserDetails {
     }
 
     public void switchDelegationMode(OrcidProfile profile) {
-        inDelegationMode = !profile.getOrcid().getValue().equals(realProfile.getOrcid().getValue());
+        inDelegationMode = !profile.extractOrcidNumber().equals(realProfile.extractOrcidNumber());
         setEffectiveProfile(profile);
     }
 

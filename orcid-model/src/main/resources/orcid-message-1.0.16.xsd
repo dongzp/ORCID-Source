@@ -86,7 +86,6 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="orcid:orcid" minOccurs="0"/>
                 <xs:element ref="orcid:orcid-id" minOccurs="0"/>
                 <xs:element ref="orcid:orcid-history" minOccurs="0"/>
                 <xs:element ref="orcid:orcid-bio" minOccurs="0" maxOccurs="1"/>

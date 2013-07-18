@@ -27,6 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.orcid.utils.OrcidStringUtils;
+
 /**
  * <p>
  * Java class for anonymous complex type.
@@ -60,6 +62,7 @@ import javax.xml.bind.annotation.XmlType;
 public class OrcidProfile implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Deprecated
     protected Orcid orcid;
 
     @XmlElement(name = "orcid-id")
@@ -107,6 +110,7 @@ public class OrcidProfile implements Serializable {
      *            allowed object is {@link Orcid }
      * 
      */
+    @Deprecated
     public void setOrcid(Orcid value) {
         this.orcid = value;
     }
@@ -126,8 +130,20 @@ public class OrcidProfile implements Serializable {
      *            allowed object is {@link String }
      * 
      */
+    @Deprecated
     public void setOrcid(String value) {
-        this.orcid = new Orcid(value);
+        if (value == null) {
+            orcid = null;
+        } else {
+            this.orcid = new Orcid(value);
+        }
+    }
+
+    public String extractOrcidNumber() {
+        if (orcidId == null) {
+            return null;
+        }
+        return OrcidStringUtils.getOrcidNumber(orcidId);
     }
 
     /**

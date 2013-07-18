@@ -173,6 +173,9 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Resource(name = "profileCache")
     private Cache profileCache;
 
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
+
     private int claimWaitPeriodDays = 10;
 
     private int claimReminderAfterDays = 8;
@@ -216,8 +219,8 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile createOrcidProfile(OrcidProfile orcidProfile) {
-        if (orcidProfile.getOrcid() == null) {
-            orcidProfile.setOrcid(orcidGenerationManager.createNewOrcid());
+        if (orcidProfile.getOrcidId() == null) {
+            orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(orcidGenerationManager.createNewOrcid()));
         }
 
         ProfileEntity profileEntity = adapter.toProfileEntity(orcidProfile);
@@ -241,7 +244,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Transactional
     public OrcidProfile updateOrcidProfile(OrcidProfile orcidProfile) {
         String amenderOrcid = retrieveAmenderOrcid();
-        ProfileEntity existingProfileEntity = profileDao.find(orcidProfile.getOrcid().getValue());
+        ProfileEntity existingProfileEntity = profileDao.find(orcidProfile.extractOrcidNumber());
         if (existingProfileEntity != null) {
             profileDao.removeChildrenWithGeneratedIds(existingProfileEntity);
             setWorkPrivacy(orcidProfile, existingProfileEntity.getWorkVisibilityDefault());
@@ -271,7 +274,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
             return authorizationRequest.getClientId();
         }
         if (OrcidProfileUserDetails.class.isAssignableFrom(authentication.getPrincipal().getClass())) {
-            return ((OrcidProfileUserDetails) authentication.getPrincipal()).getRealProfile().getOrcid().getValue();
+            return ((OrcidProfileUserDetails) authentication.getPrincipal()).getRealProfile().extractOrcidNumber();
         }
         return null;
     }
@@ -489,7 +492,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
 
     private OrcidProfile createReservedForClaimOrcidProfile(String orcid) {
         OrcidProfile op = new OrcidProfile();
-        op.setOrcid(orcid);
+        op.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(orcid));
         OrcidHistory oh = new OrcidHistory();
         oh.setClaimed(new Claimed(false));
         op.setOrcidHistory(oh);
@@ -567,7 +570,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile updateOrcidWorks(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
 
         if (existingProfile == null) {
             return null;
@@ -586,7 +589,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile addExternalIdentifiers(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
 
         if (existingProfile != null && existingProfile.getOrcidBio() != null) {
             OrcidBio orcidBio = existingProfile.getOrcidBio();
@@ -621,7 +624,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile updateOrcidBio(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
         if (existingProfile == null) {
             return null;
         }
@@ -634,7 +637,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile updatePersonalInformation(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
 
         if (existingProfile == null) {
             return null;
@@ -648,7 +651,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile updateOrcidHistory(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
 
         if (existingProfile == null) {
             return null;
@@ -661,7 +664,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile updateAffiliations(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
         if (existingProfile == null) {
             return null;
         }
@@ -672,7 +675,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile updatePasswordInformation(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
         if (existingProfile == null || existingProfile.getOrcidInternal() == null) {
             // Nothing we can do with this. Just return null
             return null;
@@ -689,7 +692,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
 
     @Override
     public OrcidProfile updatePasswordSecurityQuestionsInformation(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
         if (existingProfile == null || existingProfile.getOrcidInternal() == null) {
             // Nothing we can do with this. Just return null
             return null;
@@ -708,7 +711,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile updatePreferences(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
         if (existingProfile == null) {
             return null;
         }
@@ -720,7 +723,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile addOrcidWorks(OrcidProfile updatedOrcidProfile) {
-        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.getOrcid().getValue());
+        OrcidProfile existingProfile = retrieveOrcidProfile(updatedOrcidProfile.extractOrcidNumber());
         if (existingProfile == null) {
             return null;
         }
@@ -869,7 +872,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
         minimalBio.setPersonalDetails(minimalPersonalDetails);
         minimalBio.setContactDetails(minimalContactDetails);
         blankedOrcidProfile.setOrcidBio(minimalBio);
-        blankedOrcidProfile.setOrcid(existingOrcidProfile.getOrcid().getValue());
+        blankedOrcidProfile.setOrcidId(existingOrcidProfile.getOrcidId());
 
         return this.updateOrcidProfile(blankedOrcidProfile);
     }
@@ -937,7 +940,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
                 || updatedOrcidProfile.getOrcidBio().getAffiliations().isEmpty()) {
             return null;
         }
-        String orcid = updatedOrcidProfile.getOrcid().getValue();
+        String orcid = updatedOrcidProfile.extractOrcidNumber();
         OrcidProfile existingProfile = retrieveOrcidProfile(orcid);
         if (existingProfile == null) {
             return null;
@@ -956,7 +959,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     @Override
     @Transactional
     public OrcidProfile addDelegates(OrcidProfile updatedOrcidProfile) {
-        String orcid = updatedOrcidProfile.getOrcid().getValue();
+        String orcid = updatedOrcidProfile.extractOrcidNumber();
         OrcidProfile existingProfile = retrieveOrcidProfile(orcid);
         if (existingProfile == null) {
             return null;
@@ -1234,7 +1237,7 @@ public class OrcidProfileManagerImpl implements OrcidProfileManager {
     }
 
     private void putInCache(OrcidProfile orcidProfile) {
-        putInCache(orcidProfile.getOrcid().getValue(), orcidProfile);
+        putInCache(orcidProfile.extractOrcidNumber(), orcidProfile);
     }
 
     private void putInCache(String orcid, OrcidProfile orcidProfile) {

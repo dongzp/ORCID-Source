@@ -38,7 +38,7 @@ public class PersonalInfoFormTest {
     @Test
     public void testGetOrcidProfile() throws IOException {
         PersonalInfoForm form = new PersonalInfoForm();
-        form.setOrcid("4444-4444-4444-4446");
+        form.setOrcidId("http://orcid.org/4444-4444-4444-4446");
         form.setGivenNames("Johnny");
         form.setFamilyName("Simpson");
         // show that other names aren't duplicates

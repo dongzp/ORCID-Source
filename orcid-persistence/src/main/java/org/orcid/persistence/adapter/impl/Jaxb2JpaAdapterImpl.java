@@ -149,12 +149,12 @@ public class Jaxb2JpaAdapterImpl implements Jaxb2JpaAdapter {
         ProfileEntity profileEntity = existingProfileEntity == null ? new ProfileEntity() : existingProfileEntity;
 
         // if orci d-id exist us it
-        String orcidString = profile.getOrcid().getValue();
+        String orcidIdString = null;
         if (profile.getOrcidId() != null && !profile.getOrcidId().isEmpty()) {
-            orcidString = OrcidStringUtils.getOrcidNumber(profile.getOrcidId());
+            orcidIdString = OrcidStringUtils.getOrcidNumber(profile.getOrcidId());
         }
 
-        profileEntity.setId(orcidString);
+        profileEntity.setId(orcidIdString);
         profileEntity.setOrcidType(profile.getType());
         setBioDetails(profileEntity, profile.getOrcidBio());
         setHistoryDetails(profileEntity, profile.getOrcidHistory());

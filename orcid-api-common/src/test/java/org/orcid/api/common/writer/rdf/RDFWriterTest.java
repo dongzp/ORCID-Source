@@ -51,8 +51,7 @@ public class RDFWriterTest {
     private OrcidMessage fakeBio() {
         OrcidMessage orcidMessage = new OrcidMessage();
         OrcidProfile orcidProfile1 = new OrcidProfile();
-        orcidProfile1.setOrcidId("http://orcid.example.com/000-1337");
-        orcidProfile1.setOrcid("000-1337");
+        orcidProfile1.setOrcidId("http://orcid.example.com/0000-1337-0000-1337");
         OrcidBio bio = new OrcidBio();
         orcidProfile1.setOrcidBio(bio);
         PersonalDetails personal = new PersonalDetails();
@@ -81,7 +80,7 @@ public class RDFWriterTest {
 
         String str = entityStream.toString("utf-8");
         System.out.println(str);
-        assertTrue(str.contains("http://orcid.example.com/000-1337"));
+        assertTrue(str.contains("http://orcid.example.com/0000-1337-0000-1337"));
         assertTrue(str.contains("foaf:name>John F"));
         assertTrue(str.contains("rdf:about"));
         assertFalse(str.contains("subClassOf"));
@@ -95,7 +94,7 @@ public class RDFWriterTest {
 
         String str = entityStream.toString("utf-8");
         System.out.println(str);
-        assertTrue(str.contains("<http://orcid.example.com/000-1337>"));
+        assertTrue(str.contains("<http://orcid.example.com/0000-1337-0000-1337>"));
         assertTrue(str.contains("foaf:Person"));
         assertTrue(str.contains("foaf:name \"John F"));
         assertFalse(str.contains("subClassOf"));

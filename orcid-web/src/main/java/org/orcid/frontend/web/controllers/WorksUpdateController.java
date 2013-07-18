@@ -222,7 +222,7 @@ public class WorksUpdateController extends BaseWorkspaceController {
             return mav;
         }
         OrcidProfile currentUser = getCurrentUser().getEffectiveProfile();
-        String currentUserOrcid = currentUser.getOrcid().getValue();
+        String currentUserOrcid = currentUser.extractOrcidNumber();
         CreditName currentUserCreditName = currentUser.getOrcidBio().getPersonalDetails().getCreditName();
         List<CurrentWorkContributor> currentWorkContributors = manualWork.getCurrentWorkContributors();
         if (currentWorkContributors != null) {

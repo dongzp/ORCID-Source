@@ -37,7 +37,7 @@ public class CurrentAffiliationsFormTest {
     @Test
     public void testGetOrcidProfile() throws IOException {
         CurrentAffiliationsForm form = new CurrentAffiliationsForm();
-        form.setOrcid("4444-4444-4444-4446");
+        form.setOrcidId("http://orcid.org/4444-4444-4444-4446");
 
         PrimaryInstitutionForm primaryInstitutionForm = form.getPrimaryInstitutionForm();
         primaryInstitutionForm.setInstitutionName("Semantico");

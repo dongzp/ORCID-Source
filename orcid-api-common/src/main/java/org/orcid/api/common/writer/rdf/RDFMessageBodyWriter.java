@@ -268,7 +268,7 @@ public class RDFMessageBodyWriter implements MessageBodyWriter<OrcidMessage> {
             webSite = m.createIndividual(baseUri, null);
             account.addProperty(foafAccountServiceHomepage, webSite);
         }
-        String orcId = orcidProfile.getOrcid().getValue();
+        String orcId = orcidProfile.extractOrcidNumber();
         account.addProperty(foafAccountName, orcId);
         account.addLabel(orcId, null);
 

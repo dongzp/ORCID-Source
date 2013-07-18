@@ -43,14 +43,14 @@ import org.orcid.jaxb.model.message.SourceName;
 
 /**
  * orcid-core - Oct 28, 2011 - PlaceholderTest
- *
+ * 
  * @author Declan Newman (declan)
  */
 
 public class MarshallingTest {
 
-    private static final List<String> GENESIS = new ArrayList<String>(Arrays
-            .asList("Peter Gabriel", "Tony Banks", "Anthony Phillips", "Mike Rutherford", "Chris Stewart"));
+    private static final List<String> GENESIS = new ArrayList<String>(
+            Arrays.asList("Peter Gabriel", "Tony Banks", "Anthony Phillips", "Mike Rutherford", "Chris Stewart"));
 
     @Test
     public void testMarshallingFullMessage() throws JAXBException {
@@ -58,7 +58,7 @@ public class MarshallingTest {
         assertNotNull(orcidMessage);
         OrcidProfile orcidProfile = orcidMessage.getOrcidProfile();
         assertNotNull(orcidProfile);
-        assertEquals("4444-4444-4444-4446", orcidProfile.getOrcid().getValue());
+        assertEquals("http://orcid.org/4444-4444-4444-4446", orcidProfile.getOrcidId());
         OrcidBio orcidBio = orcidProfile.getOrcidBio();
         assertEquals(2, orcidBio.getAffiliations().size());
         OrcidActivities orcidActivities = orcidProfile.getOrcidActivities();

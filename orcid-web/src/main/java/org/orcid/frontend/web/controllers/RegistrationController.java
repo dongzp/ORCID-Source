@@ -432,7 +432,7 @@ public class RegistrationController extends BaseController {
                 dr.setGivenNames(op.getOrcidBio().getPersonalDetails().getGivenNames().getContent());
                 dr.setInstitution(null);
             }
-            dr.setOrcid(op.getOrcid().getValue());
+            dr.setOrcid(op.extractOrcidNumber());
             drList.add(dr);
         }
 
@@ -523,7 +523,7 @@ public class RegistrationController extends BaseController {
     private void automaticallyLogin(HttpServletRequest request, String password, OrcidProfile orcidProfile) {
         UsernamePasswordAuthenticationToken token = null;
         try {
-            token = new UsernamePasswordAuthenticationToken(orcidProfile.getOrcid().getValue(), password);
+            token = new UsernamePasswordAuthenticationToken(orcidProfile.extractOrcidNumber(), password);
             token.setDetails(new WebAuthenticationDetails(request));
             Authentication authentication = authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -843,8 +843,8 @@ public class RegistrationController extends BaseController {
             profileToSave = registrationManager.createMinimalRegistration(profileToSave);
             notificationManager.sendVerificationEmail(profileToSave, uri, profileToSave.getOrcidBio().getContactDetails().retrievePrimaryEmail().getValue());
             request.getSession().setAttribute(ManageProfileController.CHECK_EMAIL_VALIDATED, false);
-            LOGGER.info("Created profile from registration orcid={}, email={}, sessionid={}", new Object[] { profileToSave.getOrcid().getValue(), email, sessionId });
-            token = new UsernamePasswordAuthenticationToken(profileToSave.getOrcid().getValue(), password);
+            LOGGER.info("Created profile from registration orcid={}, email={}, sessionid={}", new Object[] { profileToSave.extractOrcidNumber(), email, sessionId });
+            token = new UsernamePasswordAuthenticationToken(profileToSave.extractOrcidNumber(), password);
             token.setDetails(new WebAuthenticationDetails(request));
             Authentication authentication = authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);

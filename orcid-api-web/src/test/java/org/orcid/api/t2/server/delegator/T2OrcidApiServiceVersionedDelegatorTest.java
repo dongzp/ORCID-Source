@@ -143,7 +143,7 @@ public class T2OrcidApiServiceVersionedDelegatorTest extends DBUnitTest {
         assertNotNull(readResponse);
         assertEquals(HttpStatus.SC_OK, readResponse.getStatus());
         OrcidMessage retrievedMessage = (OrcidMessage) readResponse.getEntity();
-        assertEquals(orcid, retrievedMessage.getOrcidProfile().getOrcid().getValue());
+        assertEquals(orcid, retrievedMessage.getOrcidProfile().extractOrcidNumber());
         assertEquals("S. Milligan", retrievedMessage.getOrcidProfile().getOrcidBio().getPersonalDetails().getCreditName().getContent());
     }
 
@@ -166,7 +166,7 @@ public class T2OrcidApiServiceVersionedDelegatorTest extends DBUnitTest {
         assertNotNull(readResponse);
         assertEquals(HttpStatus.SC_OK, readResponse.getStatus());
         OrcidMessage retrievedMessage = (OrcidMessage) readResponse.getEntity();
-        assertEquals(orcid, retrievedMessage.getOrcidProfile().getOrcid().getValue());
+        assertEquals(orcid, retrievedMessage.getOrcidProfile().extractOrcidNumber());
         assertEquals("Test credit name", retrievedMessage.getOrcidProfile().getOrcidBio().getPersonalDetails().getCreditName().getContent());
     }
 
@@ -213,7 +213,7 @@ public class T2OrcidApiServiceVersionedDelegatorTest extends DBUnitTest {
         assertNotNull(readResponse);
         assertEquals(HttpStatus.SC_OK, readResponse.getStatus());
         OrcidMessage retrievedMessage = (OrcidMessage) readResponse.getEntity();
-        assertEquals(orcid, retrievedMessage.getOrcidProfile().getOrcid().getValue());
+        assertEquals(orcid, retrievedMessage.getOrcidProfile().extractOrcidNumber());
         GivenNames givenNames = retrievedMessage.getOrcidProfile().getOrcidBio().getPersonalDetails().getGivenNames();
         assertNotNull(givenNames);
         assertEquals("Reserved For Claim", givenNames.getContent());

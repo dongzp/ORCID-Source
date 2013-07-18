@@ -39,7 +39,6 @@ import org.orcid.jaxb.model.clientgroup.ClientType;
 import org.orcid.jaxb.model.clientgroup.OrcidClient;
 import org.orcid.jaxb.model.clientgroup.OrcidClientGroup;
 import org.orcid.jaxb.model.clientgroup.RedirectUri;
-import org.orcid.jaxb.model.clientgroup.RedirectUriType;
 import org.orcid.jaxb.model.message.Biography;
 import org.orcid.jaxb.model.message.Claimed;
 import org.orcid.jaxb.model.message.ContactDetails;
@@ -112,7 +111,7 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
             // client group.
             OrcidProfile groupProfile = createGroupProfile(orcidClientGroup);
             groupProfile = orcidProfileManager.createOrcidProfile(groupProfile);
-            groupOrcid = groupProfile.getOrcid().getValue();
+            groupOrcid = groupProfile.extractOrcidNumber();
         } else {
             // If the incoming client group ORCID is not null, then lookup the
             // existing client group.
@@ -167,14 +166,14 @@ public class OrcidClientGroupManagerImpl implements OrcidClientGroupManager {
             clientProfile = orcidProfileManager.createOrcidProfile(clientProfile);
             // Now the client profile has been created, use the profile DAO
             // to link it to the group.
-            ProfileEntity clientProfileEntity = profileDao.find(clientProfile.getOrcid().getValue());
+            ProfileEntity clientProfileEntity = profileDao.find(clientProfile.extractOrcidNumber());
             clientProfileEntity.setGroupOrcid(groupOrcid);
             profileDao.merge(clientProfileEntity);
             // And link the client to the copy of the profile cached in
             // memory by Hibernate
             clientProfileEntities.add(clientProfileEntity);
             // Use the client details service to create the client details
-            ClientDetailsEntity clientDetailsEntity = createClientDetails(clientProfile.getOrcid().getValue(), client, clientType);
+            ClientDetailsEntity clientDetailsEntity = createClientDetails(clientProfile.extractOrcidNumber(), client, clientType);
             // And put the client details into the copy of the profile
             // entity cached in memory by Hibernate.
             clientProfileEntity.setClientDetails(clientDetailsEntity);

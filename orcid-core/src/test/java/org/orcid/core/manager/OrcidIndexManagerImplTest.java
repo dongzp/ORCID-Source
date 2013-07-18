@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.orcid.core.BaseTest;
 import org.orcid.core.manager.impl.OrcidIndexManagerImpl;
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.core.security.visibility.filter.VisibilityFilter;
 import org.orcid.jaxb.model.message.Address;
 import org.orcid.jaxb.model.message.Affiliation;
@@ -91,6 +92,9 @@ public class OrcidIndexManagerImplTest extends BaseTest {
 
     @Resource
     private VisibilityFilter visibilityFilter;
+
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
 
     @Mock
     private SolrDao solrDao;
@@ -266,7 +270,7 @@ public class OrcidIndexManagerImplTest extends BaseTest {
      */
     private OrcidProfile getOrcidProfileMandatoryOnly() {
         OrcidProfile orcidProfile = new OrcidProfile();
-        orcidProfile.setOrcid("5678");
+        orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId("5678-1234-5678-1234"));
         OrcidBio orcidBio = new OrcidBio();
         ContactDetails contactDetails = new ContactDetails();
         contactDetails.addOrReplacePrimaryEmail(new Email("stan@test.com"));
@@ -290,7 +294,7 @@ public class OrcidIndexManagerImplTest extends BaseTest {
      */
     private OrcidSolrDocument mandatoryDBFieldsSolrDocumentForPersistence() {
         OrcidSolrDocument orcidSolrDocument = new OrcidSolrDocument();
-        orcidSolrDocument.setOrcid("5678");
+        orcidSolrDocument.setOrcid("5678-1234-5678-1234");
         orcidSolrDocument.setFamilyName("Logan");
         orcidSolrDocument.setGivenNames("Donald Edward");
         orcidSolrDocument.setAffiliatePrimaryInstitutionNames(Arrays.asList(new String[] { "University of Portsmouth" }));
@@ -396,7 +400,7 @@ public class OrcidIndexManagerImplTest extends BaseTest {
 
     private OrcidProfile getStandardOrcid() {
         OrcidProfile orcidProfile = new OrcidProfile();
-        orcidProfile.setOrcid("1234");
+        orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId("1234-5678-1234-5678"));
 
         OrcidBio orcidBio = new OrcidBio();
         ContactDetails contactDetails = new ContactDetails();
@@ -531,7 +535,7 @@ public class OrcidIndexManagerImplTest extends BaseTest {
 
     private OrcidSolrDocument fullyPopulatedSolrDocumentForPersistence() {
         OrcidSolrDocument orcidSolrDocument = new OrcidSolrDocument();
-        orcidSolrDocument.setOrcid("1234");
+        orcidSolrDocument.setOrcid("1234-5678-1234-5678");
         orcidSolrDocument.setCreditName("credit name");
         orcidSolrDocument.setDigitalObjectIds(new ArrayList<String>());
         orcidSolrDocument.setFamilyName("familyName");

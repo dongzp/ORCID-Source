@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.orcid.core.BaseTest;
 import org.orcid.core.manager.impl.OrcidSearchManagerImpl;
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.jaxb.model.message.Address;
 import org.orcid.jaxb.model.message.Affiliation;
 import org.orcid.jaxb.model.message.AffiliationType;
@@ -84,6 +85,9 @@ public class OrcidSearchManagerImplTest extends BaseTest {
     @Resource
     private OrcidSearchManagerImpl orcidSearchManager;
 
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
+
     @Mock
     private SolrDao solrDao;
 
@@ -99,10 +103,10 @@ public class OrcidSearchManagerImplTest extends BaseTest {
     @Test
     @Rollback
     public void orcidRetrievalAllDataPresentInDb() throws Exception {
-        when(solrDao.findByOrcid("1434")).thenReturn(getSolrRes5678());
-        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678")).thenReturn(getOrcidProfileAllIndexFieldsPopulated());
+        when(solrDao.findByOrcid("1434-1434-1434-1434")).thenReturn(getSolrRes5678());
+        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678-5678-5678-5678")).thenReturn(getOrcidProfileAllIndexFieldsPopulated());
 
-        String orcid = "1434";
+        String orcid = "1434-1434-1434-1434";
 
         // demonstrate that the mapping from solr (profile 1234) and dao (5678)
         // are truly seperate - the search results only return a subset of the
@@ -117,7 +121,7 @@ public class OrcidSearchManagerImplTest extends BaseTest {
         assertTrue(new Float(37.2).compareTo(result.getRelevancyScore().getValue()) == 0);
 
         OrcidProfile retrievedProfile = result.getOrcidProfile();
-        assertEquals("5678", retrievedProfile.getOrcid().getValue());
+        assertEquals("5678-5678-5678-5678", retrievedProfile.extractOrcidNumber());
         OrcidBio orcidBio = retrievedProfile.getOrcidBio();
         assertEquals("Logan", orcidBio.getPersonalDetails().getFamilyName().getContent());
         assertEquals("Donald Edward", orcidBio.getPersonalDetails().getGivenNames().getContent());
@@ -178,15 +182,15 @@ public class OrcidSearchManagerImplTest extends BaseTest {
     @Rollback
     public void orcidRetrievalMandatoryFieldsOnly() {
 
-        when(solrDao.findByOrcid("1434")).thenReturn(getSolrRes5678());
-        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678")).thenReturn(getOrcidProfile5678MandatoryOnly());
-        OrcidMessage retrievedOrcidMessage = orcidSearchManager.findOrcidSearchResultsById("1434");
+        when(solrDao.findByOrcid("1434-1434-1434-1434")).thenReturn(getSolrRes5678());
+        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678-5678-5678-5678")).thenReturn(getOrcidProfile5678MandatoryOnly());
+        OrcidMessage retrievedOrcidMessage = orcidSearchManager.findOrcidSearchResultsById("1434-1434-1434-1434");
         assertNotNull(retrievedOrcidMessage);
         assertTrue(retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().size() == 1);
 
         OrcidSearchResult result = retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().get(0);
         OrcidProfile retrievedProfile = result.getOrcidProfile();
-        assertEquals("5678", retrievedProfile.getOrcid().getValue());
+        assertEquals("5678-5678-5678-5678", retrievedProfile.extractOrcidNumber());
         OrcidBio orcidBio = retrievedProfile.getOrcidBio();
         assertEquals("Logan", orcidBio.getPersonalDetails().getFamilyName().getContent());
         assertEquals("Donald Edward", orcidBio.getPersonalDetails().getGivenNames().getContent());
@@ -196,9 +200,9 @@ public class OrcidSearchManagerImplTest extends BaseTest {
     @Rollback
     public void orcidInIndexButNotinDb() {
 
-        when(solrDao.findByOrcid("1434")).thenReturn(getSolrRes5678());
-        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678")).thenReturn(null);
-        OrcidMessage retrievedOrcidMessage = orcidSearchManager.findOrcidSearchResultsById("1434");
+        when(solrDao.findByOrcid("1434-1434-1434-1434")).thenReturn(getSolrRes5678());
+        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678-5678-5678-5678")).thenReturn(null);
+        OrcidMessage retrievedOrcidMessage = orcidSearchManager.findOrcidSearchResultsById("1434-1434-1434-1434");
         assertNotNull(retrievedOrcidMessage);
         assertNotNull(retrievedOrcidMessage.getOrcidSearchResults());
         assertTrue(retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().isEmpty());
@@ -209,19 +213,19 @@ public class OrcidSearchManagerImplTest extends BaseTest {
     public void oneOrcidInDbOtherMissing() {
 
         when(solrDao.findByDocumentCriteria("rndQuery", null, null)).thenReturn(multipleResultsForQuery());
-        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678")).thenReturn(getOrcidProfile5678MandatoryOnly());
-        when(orcidProfileManager.retrieveClaimedOrcidProfile("6789")).thenReturn(null);
+        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678-5678-5678-5678")).thenReturn(getOrcidProfile5678MandatoryOnly());
+        when(orcidProfileManager.retrieveClaimedOrcidProfile("6789-6789-6789-6789")).thenReturn(null);
         OrcidMessage retrievedOrcidMessage = orcidSearchManager.findOrcidsByQuery("rndQuery");
         assertNotNull(retrievedOrcidMessage);
         assertTrue(retrievedOrcidMessage.getOrcidSearchResults() != null && retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().size() == 1);
         OrcidSearchResult searchResult = retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().get(0);
         OrcidProfile profileReturnedFromSearch = searchResult.getOrcidProfile();
-        assertEquals("5678", profileReturnedFromSearch.getOrcid().getValue());
+        assertEquals("5678-5678-5678-5678", profileReturnedFromSearch.extractOrcidNumber());
     }
 
     private OrcidProfile getOrcidProfile5678MandatoryOnly() {
         OrcidProfile orcidProfile = new OrcidProfile();
-        orcidProfile.setOrcid("5678");
+        orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId("5678-5678-5678-5678"));
         OrcidBio orcidBio = new OrcidBio();
         PersonalDetails personalDetails = new PersonalDetails();
         personalDetails.setFamilyName(new FamilyName("Logan"));
@@ -234,7 +238,7 @@ public class OrcidSearchManagerImplTest extends BaseTest {
 
     private OrcidProfile getOrcidProfile6789MandatoryOnly() {
         OrcidProfile orcidProfile = new OrcidProfile();
-        orcidProfile.setOrcid("6789");
+        orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId("6789-6789-6789-6789"));
         OrcidBio orcidBio = new OrcidBio();
         ContactDetails contactDetails = new ContactDetails();
         contactDetails.addOrReplacePrimaryEmail(new Email("don@semantico.com"));
@@ -257,15 +261,15 @@ public class OrcidSearchManagerImplTest extends BaseTest {
     public void orcidMultipleOrcidsIndexed() {
 
         when(solrDao.findByDocumentCriteria("rndQuery", null, null)).thenReturn(multipleResultsForQuery());
-        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678")).thenReturn(getOrcidProfile5678MandatoryOnly());
-        when(orcidProfileManager.retrieveClaimedOrcidProfile("6789")).thenReturn(getOrcidProfile6789MandatoryOnly());
+        when(orcidProfileManager.retrieveClaimedOrcidProfile("5678-5678-5678-5678")).thenReturn(getOrcidProfile5678MandatoryOnly());
+        when(orcidProfileManager.retrieveClaimedOrcidProfile("6789-6789-6789-6789")).thenReturn(getOrcidProfile6789MandatoryOnly());
         OrcidMessage retrievedOrcidMessage = orcidSearchManager.findOrcidsByQuery("rndQuery");
         assertNotNull(retrievedOrcidMessage);
         assertTrue(retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().size() == 2);
 
         OrcidSearchResult result = retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().get(0);
         OrcidProfile retrievedProfile = result.getOrcidProfile();
-        assertEquals("5678", retrievedProfile.getOrcid().getValue());
+        assertEquals("5678-5678-5678-5678", retrievedProfile.extractOrcidNumber());
         OrcidBio orcidBio = retrievedProfile.getOrcidBio();
         assertEquals("Logan", orcidBio.getPersonalDetails().getFamilyName().getContent());
         assertEquals("Donald Edward", orcidBio.getPersonalDetails().getGivenNames().getContent());
@@ -274,7 +278,7 @@ public class OrcidSearchManagerImplTest extends BaseTest {
         OrcidSearchResult result2 = retrievedOrcidMessage.getOrcidSearchResults().getOrcidSearchResult().get(1);
 
         OrcidProfile retrievedProfile2 = result2.getOrcidProfile();
-        assertEquals("6789", retrievedProfile2.getOrcid().getValue());
+        assertEquals("6789-6789-6789-6789", retrievedProfile2.extractOrcidNumber());
         OrcidBio orcidBio2 = retrievedProfile2.getOrcidBio();
         assertEquals("Thomson", orcidBio2.getPersonalDetails().getFamilyName().getContent());
         assertEquals("Homer J", orcidBio2.getPersonalDetails().getGivenNames().getContent());
@@ -284,14 +288,14 @@ public class OrcidSearchManagerImplTest extends BaseTest {
 
     private OrcidSolrResult getSolrRes5678() {
         OrcidSolrResult solrResult = new OrcidSolrResult();
-        solrResult.setOrcid("5678");
+        solrResult.setOrcid("5678-5678-5678-5678");
         solrResult.setRelevancyScore(new Float(37.2));
         return solrResult;
     }
 
     private OrcidSolrResult getSolrRes6789() {
         OrcidSolrResult solrResult = new OrcidSolrResult();
-        solrResult.setOrcid("6789");
+        solrResult.setOrcid("6789-6789-6789-6789");
         solrResult.setRelevancyScore(new Float(52.2));
         return solrResult;
     }
@@ -307,7 +311,7 @@ public class OrcidSearchManagerImplTest extends BaseTest {
 
     private OrcidProfile getOrcidProfileAllIndexFieldsPopulated() {
         OrcidProfile orcidProfile = new OrcidProfile();
-        orcidProfile.setOrcid("5678");
+        orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId("5678-5678-5678-5678"));
 
         OrcidBio orcidBio = new OrcidBio();
         PersonalDetails personalDetails = new PersonalDetails();

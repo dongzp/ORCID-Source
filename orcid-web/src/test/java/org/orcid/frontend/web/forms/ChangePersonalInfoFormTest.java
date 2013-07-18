@@ -27,7 +27,7 @@ public class ChangePersonalInfoFormTest {
     @Test
     public void testConvertFormToOrcidProfile() throws Exception {
         OrcidProfile profile = new OrcidProfile();
-        profile.setOrcid("4444-4444-4444-4446");
+        profile.setOrcidId("http://orcid.org/4444-4444-4444-4446");
         ChangePersonalInfoForm changePersonalInfoForm = new ChangePersonalInfoForm(profile);
         changePersonalInfoForm.setFirstName("Johnny");
         changePersonalInfoForm.setLastName("Simpson");
@@ -50,7 +50,7 @@ public class ChangePersonalInfoFormTest {
     @Test
     public void testRemoveDuplicatedOtherNames() throws Exception {
         OrcidProfile profile = new OrcidProfile();
-        profile.setOrcid("4444-4444-4444-4446");
+        profile.setOrcidId("http://orcid.org/4444-4444-4444-4446");
         ChangePersonalInfoForm changePersonalInfoForm = new ChangePersonalInfoForm(profile);
         changePersonalInfoForm.setFirstName("Johnny");
         changePersonalInfoForm.setLastName("Simpson");
@@ -73,7 +73,7 @@ public class ChangePersonalInfoFormTest {
     @Test
     public void testRemoveDuplicatedKeywords() throws Exception {
         OrcidProfile profile = new OrcidProfile();
-        profile.setOrcid("4444-4444-4444-4446");
+        profile.setOrcidId("http://orcid.org/4444-4444-4444-4446");
         ChangePersonalInfoForm changePersonalInfoForm = new ChangePersonalInfoForm(profile);
         changePersonalInfoForm.setFirstName("Johnny");
         changePersonalInfoForm.setLastName("Simpson");

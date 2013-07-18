@@ -218,7 +218,7 @@ public class BaseController {
     protected OrcidProfileUserDetails getCurrentUserAndRefreshIfNecessary() {
         OrcidProfileUserDetails currentUser = getCurrentUser();
         OrcidProfile effectiveProfile = currentUser.getEffectiveProfile();
-        String effectiveOrcid = effectiveProfile.getOrcid().getValue();
+        String effectiveOrcid = effectiveProfile.extractOrcidNumber();
         Date actualLastModified = orcidProfileManager.retrieveLastModifiedDate(effectiveOrcid);
         Date cachedEffectiveProfileLastModified = currentUser.getEffectiveProfileLastModified();
         if (cachedEffectiveProfileLastModified == null || actualLastModified.after(cachedEffectiveProfileLastModified)) {
@@ -239,8 +239,8 @@ public class BaseController {
 
     protected String getCurrentUserOrcid() {
         OrcidProfileUserDetails currentUser = getCurrentUser();
-        if (currentUser != null && currentUser.getEffectiveProfile() != null && currentUser.getEffectiveProfile().getOrcid() != null) {
-            return currentUser.getEffectiveProfile().getOrcid().getValue();
+        if (currentUser != null && currentUser.getEffectiveProfile() != null && currentUser.getEffectiveProfile().extractOrcidNumber() != null) {
+            return currentUser.getEffectiveProfile().extractOrcidNumber();
         } else {
             return null;
         }
@@ -276,8 +276,8 @@ public class BaseController {
     @ModelAttribute("realUserOrcid")
     public String getRealUserOrcid() {
         OrcidProfileUserDetails currentUser = getCurrentUser();
-        if (currentUser != null && currentUser.getRealProfile() != null && currentUser.getRealProfile().getOrcid() != null) {
-            return currentUser.getRealProfile().getOrcid().getValue();
+        if (currentUser != null && currentUser.getRealProfile() != null && currentUser.getRealProfile().extractOrcidNumber() != null) {
+            return currentUser.getRealProfile().extractOrcidNumber();
         } else {
             return null;
         }
@@ -420,14 +420,14 @@ public class BaseController {
      * */
     @ModelAttribute("staticCdn")
     @Cacheable("staticContent")
-    public String getStaticCdnPath() {        
+    public String getStaticCdnPath() {
         if (StringUtils.isEmpty(this.cdnConfigFile)) {
             return getStaticContentPath();
         }
 
         ClassPathResource configFile = new ClassPathResource(this.cdnConfigFile);
         if (configFile.exists()) {
-            try (InputStream is = configFile.getInputStream(); BufferedReader br = new BufferedReader(new InputStreamReader(is))) {                
+            try (InputStream is = configFile.getInputStream(); BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                 String uri = br.readLine();
                 if (uri != null)
                     this.staticCdnPath = uri;

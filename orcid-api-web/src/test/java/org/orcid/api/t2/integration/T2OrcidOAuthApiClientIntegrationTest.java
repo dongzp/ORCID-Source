@@ -140,7 +140,6 @@ public class T2OrcidOAuthApiClientIntegrationTest extends BaseT2OrcidOAuthApiCli
         OrcidMessage message = orcidClientDataHelper.createFromXML(OrcidClientDataHelper.ORCID_INTERNAL_NO_SPONSOR_XML);
         String originalFamilyName = message.getOrcidProfile().getOrcidBio().getPersonalDetails().getFamilyName().getContent();
         assertEquals("familyName", originalFamilyName);
-        message.getOrcidProfile().setOrcid(this.orcid);
         message.getOrcidProfile().setOrcidWorks(null);
         message.getOrcidProfile().getOrcidBio().getPersonalDetails().setFamilyName(new FamilyName("Bowen"));
         assertClientResponse401Details(oauthT2Client.updateBioDetailsXml(orcid, message, null));
@@ -224,7 +223,6 @@ public class T2OrcidOAuthApiClientIntegrationTest extends BaseT2OrcidOAuthApiCli
 
         createNewOrcidUsingAccessToken();
         OrcidMessage message = orcidClientDataHelper.createFromXML(OrcidClientDataHelper.ORCID_INTERNAL_NO_SPONSOR_XML);
-        message.getOrcidProfile().setOrcid(this.orcid);
         OrcidWorks orcidWorks = message.getOrcidProfile().retrieveOrcidWorks();
         assertTrue(orcidWorks != null && orcidWorks.getOrcidWork() != null && orcidWorks.getOrcidWork().size() == 3);
 
@@ -245,7 +243,6 @@ public class T2OrcidOAuthApiClientIntegrationTest extends BaseT2OrcidOAuthApiCli
     public void testUpdateBioDetailsXml() throws Exception {
         createNewOrcidUsingAccessToken();
         OrcidMessage message = orcidClientDataHelper.createFromXML(OrcidClientDataHelper.ORCID_INTERNAL_NO_SPONSOR_XML);
-        message.getOrcidProfile().setOrcid(this.orcid);
         message.getOrcidProfile().setOrcidWorks(null);
         message.getOrcidProfile().getOrcidBio().getPersonalDetails().setFamilyName(new FamilyName("Bowen"));
         assertClientResponse401Details(oauthT2Client.updateBioDetailsXml(orcid, message, null));
@@ -356,7 +353,7 @@ public class T2OrcidOAuthApiClientIntegrationTest extends BaseT2OrcidOAuthApiCli
 
             createNewOrcidUsingAccessToken();
             OrcidMessage sponsorMessage = orcidClientDataHelper.createSponsor();
-            sponsorOrcid = sponsorMessage.getOrcidProfile().getOrcid().getValue();
+            sponsorOrcid = sponsorMessage.getOrcidProfile().extractOrcidNumber();
 
             // get the bio details of the actual
             createAccessTokenFromCredentials();

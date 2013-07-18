@@ -18,6 +18,7 @@ package org.orcid.core.security;
 
 import org.apache.commons.lang.StringUtils;
 import org.orcid.core.manager.ProfileEntityManager;
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.core.oauth.OrcidOAuth2Authentication;
 import org.orcid.core.oauth.OrcidOauth2TokenDetailService;
 import org.orcid.jaxb.model.message.Orcid;
@@ -59,6 +60,9 @@ public class DefaultPermissionChecker implements PermissionChecker {
     @Resource
     private OrcidOauth2TokenDetailService orcidOauthTokenDetailService;
 
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
+
     /**
      * Check the permissions for the given
      * {@link org.springframework.security.core.Authentication} object and the
@@ -79,8 +83,8 @@ public class DefaultPermissionChecker implements PermissionChecker {
     @Override
     public void checkPermissions(Authentication authentication, ScopePathType requiredScope, String orcid, OrcidMessage orcidMessage) {
         if (StringUtils.isNotBlank(orcid) && orcidMessage != null && orcidMessage.getOrcidProfile() != null
-                && (orcidMessage.getOrcidProfile().getOrcid() == null || StringUtils.isBlank(orcidMessage.getOrcidProfile().getOrcid().getValue()))) {
-            orcidMessage.getOrcidProfile().setOrcid(orcid);
+                && (orcidMessage.getOrcidProfile().extractOrcidNumber() == null || StringUtils.isBlank(orcidMessage.getOrcidProfile().extractOrcidNumber()))) {
+            orcidMessage.getOrcidProfile().setOrcidId(orcidUrlManager.orcidNumberToOrcidId(orcid));
         }
         performPermissionChecks(authentication, requiredScope, orcid, orcidMessage);
     }
@@ -170,7 +174,7 @@ public class DefaultPermissionChecker implements PermissionChecker {
         Set<Visibility> visibilities = new HashSet<Visibility>();
         visibilities.add(Visibility.PUBLIC);
 
-        String orcid = orcidMessage.getOrcidProfile().getOrcid().getValue();
+        String orcid = orcidMessage.getOrcidProfile().extractOrcidNumber();
 
         // Check the scopes and it will throw an an AccessControlException if
         // the correct scope is not found. This
@@ -255,8 +259,8 @@ public class DefaultPermissionChecker implements PermissionChecker {
     private void performUserChecks(OAuth2Authentication oAuth2Authentication, ScopePathType requiredScope, OrcidMessage orcidMessage, String orcid) {
         ProfileEntity principal = (ProfileEntity) oAuth2Authentication.getPrincipal();
         String userOrcid = principal.getId();
-        if (orcidMessage != null && orcidMessage.getOrcidProfile() != null && orcidMessage.getOrcidProfile().getOrcid() != null && StringUtils.isNotBlank(orcid)) {
-            String messageOrcid = orcidMessage.getOrcidProfile().getOrcid().getValue();
+        if (orcidMessage != null && orcidMessage.getOrcidProfile() != null && orcidMessage.getOrcidProfile().extractOrcidNumber() != null && StringUtils.isNotBlank(orcid)) {
+            String messageOrcid = orcidMessage.getOrcidProfile().extractOrcidNumber();
             // First check that this is a valid call. If these don't match then
             // the request is invalid
             if (!messageOrcid.equals(orcid)) {
@@ -286,8 +290,7 @@ public class DefaultPermissionChecker implements PermissionChecker {
         // as an update
         if (orcidMessage != null && orcidMessage.getOrcidProfile() != null && StringUtils.isNotBlank(orcid)) {
 
-            Orcid orcidOb = orcidMessage.getOrcidProfile().getOrcid();
-            String messageOrcid = orcidOb != null ? orcidOb.getValue() : orcid;
+            String messageOrcid = orcidMessage.getOrcidProfile().extractOrcidNumber();
             if (StringUtils.isNotBlank(messageOrcid) && !orcid.equals(messageOrcid)) {
                 throw new IllegalArgumentException("The ORCID in the body and the URI do NOT match. Body ORCID: " + messageOrcid + " URI ORCID: " + orcid
                         + " do NOT match.");

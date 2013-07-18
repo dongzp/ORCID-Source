@@ -41,6 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.orcid.api.common.exception.OrcidBadRequestException;
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.core.oauth.OrcidOAuth2Authentication;
 import org.orcid.jaxb.model.message.ContactDetails;
 import org.orcid.jaxb.model.message.CreditName;
@@ -73,6 +74,9 @@ public class T2OrcidApiServiceDelegatorTest extends DBUnitTest {
 
     @Resource(name = "t2OrcidApiServiceDelegatorLatest")
     private T2OrcidApiServiceDelegator t2OrcidApiServiceDelegator;
+
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
 
     @Mock
     private UriInfo mockedUriInfo;
@@ -107,7 +111,7 @@ public class T2OrcidApiServiceDelegatorTest extends DBUnitTest {
         orcidMessage.setMessageVersion("1.0.14");
         OrcidProfile orcidProfile = new OrcidProfile();
         orcidMessage.setOrcidProfile(orcidProfile);
-        orcidProfile.setOrcid("4444-4444-4444-4441");
+        orcidProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId("4444-4444-4444-4441"));
         OrcidActivities orcidActivities = new OrcidActivities();
         orcidProfile.setOrcidActivities(orcidActivities);
         OrcidWorks orcidWorks = new OrcidWorks();
@@ -143,7 +147,7 @@ public class T2OrcidApiServiceDelegatorTest extends DBUnitTest {
         assertNotNull(readResponse);
         assertEquals(HttpStatus.SC_OK, readResponse.getStatus());
         OrcidMessage retrievedMessage = (OrcidMessage) readResponse.getEntity();
-        assertEquals(orcid, retrievedMessage.getOrcidProfile().getOrcid().getValue());
+        assertEquals(orcid, retrievedMessage.getOrcidProfile().extractOrcidNumber());
         assertEquals("S. Milligan", retrievedMessage.getOrcidProfile().getOrcidBio().getPersonalDetails().getCreditName().getContent());
     }
 
@@ -166,7 +170,7 @@ public class T2OrcidApiServiceDelegatorTest extends DBUnitTest {
         assertNotNull(readResponse);
         assertEquals(HttpStatus.SC_OK, readResponse.getStatus());
         OrcidMessage retrievedMessage = (OrcidMessage) readResponse.getEntity();
-        assertEquals(orcid, retrievedMessage.getOrcidProfile().getOrcid().getValue());
+        assertEquals(orcid, retrievedMessage.getOrcidProfile().extractOrcidNumber());
         assertEquals("Test credit name", retrievedMessage.getOrcidProfile().getOrcidBio().getPersonalDetails().getCreditName().getContent());
     }
 
@@ -191,7 +195,7 @@ public class T2OrcidApiServiceDelegatorTest extends DBUnitTest {
         assertNotNull(readResponse);
         assertEquals(HttpStatus.SC_OK, readResponse.getStatus());
         OrcidMessage retrievedMessage = (OrcidMessage) readResponse.getEntity();
-        assertEquals(orcid, retrievedMessage.getOrcidProfile().getOrcid().getValue());
+        assertEquals(orcid, retrievedMessage.getOrcidProfile().extractOrcidNumber());
         GivenNames givenNames = retrievedMessage.getOrcidProfile().getOrcidBio().getPersonalDetails().getGivenNames();
         assertNotNull(givenNames);
         assertEquals("Reserved For Claim", givenNames.getContent());

@@ -136,7 +136,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         subjectDao.merge(new SubjectEntity("Dance"));
 
         OrcidProfile delegateProfile = new OrcidProfile();
-        delegateProfile.setOrcid(DELEGATE_ORCID);
+        delegateProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(DELEGATE_ORCID));
         OrcidBio delegateBio = new OrcidBio();
         delegateProfile.setOrcidBio(delegateBio);
         PersonalDetails delegatePersonalDetails = new PersonalDetails();
@@ -145,7 +145,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         orcidProfileManager.createOrcidProfile(delegateProfile);
 
         OrcidProfile applicationProfile = new OrcidProfile();
-        applicationProfile.setOrcid(APPLICATION_ORCID);
+        applicationProfile.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(APPLICATION_ORCID));
         OrcidBio applicationBio = new OrcidBio();
         applicationProfile.setOrcidBio(applicationBio);
         PersonalDetails applicationPersonalDetails = new PersonalDetails();
@@ -154,8 +154,8 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         orcidProfileManager.createOrcidProfile(applicationProfile);
 
         ClientDetailsEntity clientDetails = new ClientDetailsEntity();
-        clientDetails.setId(applicationProfile.getOrcid().getValue());
-        ProfileEntity applicationProfileEntity = profileDao.find(applicationProfile.getOrcid().getValue());
+        clientDetails.setId(applicationProfile.extractOrcidNumber());
+        ProfileEntity applicationProfileEntity = profileDao.find(applicationProfile.extractOrcidNumber());
         profileDao.refresh(applicationProfileEntity);
         clientDetails.setProfileEntity(applicationProfileEntity);
         clientDetailsDao.merge(clientDetails);
@@ -163,11 +163,11 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         OrcidOauth2TokenDetail token = new OrcidOauth2TokenDetail();
         token.setTokenValue("1234");
         token.setClientDetailsEntity(clientDetails);
-        token.setProfile(profileDao.find(delegateProfile.getOrcid().getValue()));
+        token.setProfile(profileDao.find(delegateProfile.extractOrcidNumber()));
         token.setScope(StringUtils.join(new String[] { ScopePathType.ORCID_BIO_READ_LIMITED.value(), ScopePathType.ORCID_BIO_UPDATE.value() }, " "));
         Set<OrcidOauth2TokenDetail> tokens = new HashSet<>();
         tokens.add(token);
-        ProfileEntity delegateProfileEntity = profileDao.find(delegateProfile.getOrcid().getValue());
+        ProfileEntity delegateProfileEntity = profileDao.find(delegateProfile.extractOrcidNumber());
         delegateProfileEntity.setTokenDetails(tokens);
         profileDao.merge(delegateProfileEntity);
     }
@@ -289,7 +289,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         assertEquals(1, profile1.getOrcidBio().getApplications().getApplicationSummary().size());
 
         OrcidProfile profile2 = createBasicProfile();
-        profile2.setOrcid(DELEGATE_ORCID);
+        profile2.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(DELEGATE_ORCID));
 
         orcidProfileManager.updateOrcidProfile(profile2);
 
@@ -441,7 +441,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         String originalPutCode = profile1.getOrcidActivities().getOrcidWorks().getOrcidWork().get(0).getPutCode();
 
         OrcidProfile profile2 = new OrcidProfile();
-        profile2.setOrcid(TEST_ORCID);
+        profile2.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(TEST_ORCID));
         OrcidWorks orcidWorks = new OrcidWorks();
         profile2.setOrcidWorks(orcidWorks);
 
@@ -488,7 +488,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         orcidProfileManager.createOrcidProfile(profile1);
 
         OrcidProfile profile2 = new OrcidProfile();
-        profile2.setOrcid(TEST_ORCID);
+        profile2.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(TEST_ORCID));
         OrcidWorks orcidWorks = new OrcidWorks();
         profile2.setOrcidWorks(orcidWorks);
 
@@ -588,8 +588,8 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         assertNotNull(userProfile.getOrcidBio().getApplications());
         assertEquals(1, userProfile.getOrcidBio().getApplications().getApplicationSummary().size());
 
-        orcidProfileManager.revokeApplication(DELEGATE_ORCID, APPLICATION_ORCID, Arrays.asList(new ScopePathType[] { ScopePathType.ORCID_BIO_READ_LIMITED,
-                ScopePathType.ORCID_BIO_UPDATE }));
+        orcidProfileManager.revokeApplication(DELEGATE_ORCID, APPLICATION_ORCID,
+                Arrays.asList(new ScopePathType[] { ScopePathType.ORCID_BIO_READ_LIMITED, ScopePathType.ORCID_BIO_UPDATE }));
 
         OrcidProfile retrievedProfile = orcidProfileManager.retrieveOrcidProfile(DELEGATE_ORCID);
         assertNotNull(retrievedProfile);
@@ -624,7 +624,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         assertEquals("random answer", encryptionManager.decryptForInternalUse(derivedProfile.getSecurityQuestionAnswer()));
         assertEquals("1234", encryptionManager.decryptForInternalUse(derivedProfile.getVerificationCode()));
 
-        OrcidProfile retrievedProfile = orcidProfileManager.retrieveOrcidProfile(derivedProfile.getOrcid().getValue());
+        OrcidProfile retrievedProfile = orcidProfileManager.retrieveOrcidProfile(derivedProfile.extractOrcidNumber());
         assertTrue(encryptionManager.hashMatches("password", derivedProfile.getPassword()));
         assertEquals("random answer", retrievedProfile.getSecurityQuestionAnswer());
         assertEquals("1234", retrievedProfile.getVerificationCode());
@@ -639,7 +639,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         assertEquals(Visibility.PRIVATE, profile1.getOrcidInternal().getPreferences().getWorkVisibilityDefault().getValue());
 
         OrcidProfile profile2 = new OrcidProfile();
-        profile2.setOrcid(TEST_ORCID);
+        profile2.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(TEST_ORCID));
         OrcidInternal internal = new OrcidInternal();
         profile2.setOrcidInternal(internal);
         Preferences preferences = new Preferences();
@@ -664,7 +664,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         orcidProfileManager.createOrcidProfile(profile1);
 
         OrcidProfile profile2 = new OrcidProfile();
-        profile2.setOrcid(TEST_ORCID);
+        profile2.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(TEST_ORCID));
         OrcidBio orcidBio = new OrcidBio();
         orcidBio.setPersonalDetails(new PersonalDetails());
 
@@ -702,7 +702,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         orcidProfileManager.createOrcidProfile(profile1);
 
         OrcidProfile profile2 = new OrcidProfile();
-        profile2.setOrcid(TEST_ORCID);
+        profile2.setOrcidId(orcidUrlManager.orcidNumberToOrcidId(TEST_ORCID));
         OrcidBio orcidBio = new OrcidBio();
         profile2.setOrcidBio(orcidBio);
         Delegation delegation = new Delegation();
@@ -761,7 +761,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         assertEquals("random answer", profile1.getSecurityQuestionAnswer());
         orcidProfileManager.createOrcidProfile(profile1);
 
-        OrcidProfile retrievedProfile = orcidProfileManager.retrieveOrcidProfile(profile1.getOrcid().getValue());
+        OrcidProfile retrievedProfile = orcidProfileManager.retrieveOrcidProfile(profile1.extractOrcidNumber());
 
         String hashedPasswordValue = retrievedProfile.getPassword();
         assertTrue("Should have hashed password", 108 == hashedPasswordValue.length() && !"password".equals(hashedPasswordValue));
@@ -770,10 +770,10 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         retrievedProfile.setPassword("A new password");
 
         OrcidProfile updatedProfile = orcidProfileManager.updatePasswordInformation(retrievedProfile);
-        updatedProfile = orcidProfileManager.retrieveOrcidProfile(updatedProfile.getOrcid().getValue());
+        updatedProfile = orcidProfileManager.retrieveOrcidProfile(updatedProfile.extractOrcidNumber());
         // retrieve orcid so as to decrypt
 
-        OrcidProfile retrieved = orcidProfileManager.retrieveOrcidProfile(updatedProfile.getOrcid().getValue());
+        OrcidProfile retrieved = orcidProfileManager.retrieveOrcidProfile(updatedProfile.extractOrcidNumber());
         assertTrue("Password should have changed and be hashed", 108 == hashedPasswordValue.length() && !hashedPasswordValue.equals(retrieved.getPassword()));
         assertTrue("Should have decrypted security answer", "random answer".equals(retrievedProfile.getSecurityQuestionAnswer()));
 
@@ -788,7 +788,7 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         assertEquals("random answer", profile1.getSecurityQuestionAnswer());
         orcidProfileManager.createOrcidProfile(profile1);
 
-        OrcidProfile retrievedProfile = orcidProfileManager.retrieveOrcidProfile(profile1.getOrcid().getValue());
+        OrcidProfile retrievedProfile = orcidProfileManager.retrieveOrcidProfile(profile1.extractOrcidNumber());
 
         String hashedPasswordValue = retrievedProfile.getPassword();
         assertTrue("Should have hashed password", 108 == hashedPasswordValue.length() && !"password".equals(hashedPasswordValue));
@@ -797,10 +797,10 @@ public class OrcidProfileManagerImplTest extends OrcidProfileManagerBaseTest {
         retrievedProfile.setSecurityQuestionAnswer("A new random answer");
 
         OrcidProfile updatedProfile = orcidProfileManager.updatePasswordSecurityQuestionsInformation(retrievedProfile);
-        updatedProfile = orcidProfileManager.retrieveOrcidProfile(updatedProfile.getOrcid().getValue());
+        updatedProfile = orcidProfileManager.retrieveOrcidProfile(updatedProfile.extractOrcidNumber());
         // retrieve orcid so as to decrypt
 
-        OrcidProfile retrieved = orcidProfileManager.retrieveOrcidProfile(updatedProfile.getOrcid().getValue());
+        OrcidProfile retrieved = orcidProfileManager.retrieveOrcidProfile(updatedProfile.extractOrcidNumber());
         assertTrue("Password should not have changed", hashedPasswordValue.equals(retrieved.getPassword()));
         assertEquals("A new random answer", retrieved.getSecurityQuestionAnswer());
 

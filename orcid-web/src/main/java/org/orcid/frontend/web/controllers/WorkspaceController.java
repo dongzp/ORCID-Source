@@ -313,7 +313,7 @@ public class WorkspaceController extends BaseWorkspaceController {
             }
             works.setOrcidWork(workList);
             currentProfile.getOrcidActivities().setOrcidWorks(works);
-            profileWorkManager.removeWork(currentProfile.getOrcid().getValue(), work.getPutCode().getValue());
+            profileWorkManager.removeWork(currentProfile.extractOrcidNumber(), work.getPutCode().getValue());
         }
 
         return deletedWork;
@@ -672,7 +672,7 @@ public class WorkspaceController extends BaseWorkspaceController {
                     //If the put codes are equal, we know that they are the same work
                     if (orcidWork.getPutCode().equals(ow.getPutCode())) {
                         //Update the privacy of the work
-                        profileWorkManager.updateWork(currentProfile.getOrcid().getValue(), ow.getPutCode(), ow.getVisibility());
+                        profileWorkManager.updateWork(currentProfile.extractOrcidNumber(), ow.getPutCode(), ow.getVisibility());
                     }
                 }
             }

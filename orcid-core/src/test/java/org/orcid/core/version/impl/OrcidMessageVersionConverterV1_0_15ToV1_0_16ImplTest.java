@@ -35,7 +35,7 @@ public class OrcidMessageVersionConverterV1_0_15ToV1_0_16ImplTest {
 
     @Test
     public void testUpgradeMessage() {
-        Reader reader = new InputStreamReader(getClass().getResourceAsStream("/org/orcid/core/version/orcid-public-full-message-v1.0.15.xml"));
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream("/org/orcid/core/version/orcid-public-full-v1.0.15.xml"));
         OrcidMessage oldMessage = OrcidMessage.unmarshall(reader);
         OrcidMessageVersionConverter converter = new OrcidMessageVersionConverterImplV1_0_15ToV1_0_16();
         OrcidMessage newMessage = converter.upgradeMessage(oldMessage);

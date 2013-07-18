@@ -28,7 +28,6 @@
 		<orcid-search-result>
 			<relevancy-score>0.65</relevancy-score>
 			<orcid-profile>
-				<orcid>4444-4444-4444-4446</orcid>
 				<orcid-id>http://orcid.org/4444-4444-4444-4446</orcid-id>
 				<orcid-history>
 					<creation-method>API</creation-method>

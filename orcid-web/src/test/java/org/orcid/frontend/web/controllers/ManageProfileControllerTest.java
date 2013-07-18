@@ -195,7 +195,7 @@ public class ManageProfileControllerTest extends BaseControllerTest {
         assertEquals("manage", mav.getViewName());
         assertNotNull(passwordOptionsForm);
         assertNotNull(profile);
-        assertEquals("4444-4444-4444-4446", profile.getOrcid().getValue());
+        assertEquals("4444-4444-4444-4446", profile.extractOrcidNumber());
         assertEquals("affiliations-tab", activeTab);
         assertEquals(2, securityQuestions.size());
         assertNotNull(currentAffiliationsForm);

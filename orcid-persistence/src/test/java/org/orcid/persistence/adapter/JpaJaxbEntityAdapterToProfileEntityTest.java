@@ -18,7 +18,9 @@ package org.orcid.persistence.adapter;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -117,7 +119,7 @@ public class JpaJaxbEntityAdapterToProfileEntityTest extends DBUnitTest {
         assertNotNull(profileEntity);
         profileDao.persist(profileEntity);
 
-        ProfileEntity retrievedProfileEntity = profileDao.find(orcidMessage.getOrcidProfile().getOrcid().getValue());
+        ProfileEntity retrievedProfileEntity = profileDao.find(orcidMessage.getOrcidProfile().extractOrcidNumber());
         assertNotNull(retrievedProfileEntity);
         assertEquals("Josiah", retrievedProfileEntity.getGivenNames());
 
@@ -178,7 +180,7 @@ public class JpaJaxbEntityAdapterToProfileEntityTest extends DBUnitTest {
         assertNotNull(profileEntity);
         profileDao.persist(profileEntity);
 
-        ProfileEntity retrievedProfileEntity = profileDao.find(orcidMessage.getOrcidProfile().getOrcid().getValue());
+        ProfileEntity retrievedProfileEntity = profileDao.find(orcidMessage.getOrcidProfile().extractOrcidNumber());
         assertNotNull(retrievedProfileEntity);
         assertEquals("Josiah", retrievedProfileEntity.getGivenNames());
         assertEquals("abc123", retrievedProfileEntity.getEncryptedPassword());

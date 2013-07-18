@@ -154,7 +154,7 @@ public class OrcidAuthorizationCodeServiceImpl extends RandomValueAuthorizationC
 
         if (profile instanceof OrcidProfileUserDetails && ((OrcidProfileUserDetails) profile).getEffectiveProfile() != null) {
             OrcidProfile orcidProfile = ((OrcidProfileUserDetails) profile).getEffectiveProfile();
-            entity = profileEntityManager.findByOrcid(orcidProfile.getOrcid().getValue());
+            entity = profileEntityManager.findByOrcid(orcidProfile.extractOrcidNumber());
         }
 
         if (entity == null) {

@@ -21,6 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.orcid.core.manager.ProfileEntityManager;
+import org.orcid.core.manager.impl.OrcidUrlManager;
 import org.orcid.core.oauth.OrcidOauth2UserAuthentication;
 import org.orcid.jaxb.model.message.OrcidMessage;
 import org.orcid.jaxb.model.message.ScopePathType;
@@ -60,6 +61,9 @@ public class DefaultPermissionCheckerTest extends DBUnitTest {
     @Resource(name = "profileEntityManager")
     private ProfileEntityManager profileEntityManager;
 
+    @Resource
+    private OrcidUrlManager orcidUrlManager;
+
     @BeforeClass
     public static void initDBUnitData() throws Exception {
         initDBUnitData(Arrays.asList("/data/SecurityQuestionEntityData.xml", "/data/ProfileEntityData.xml", "/data/ClientDetailsEntityData.xml"), null);
@@ -83,7 +87,7 @@ public class DefaultPermissionCheckerTest extends DBUnitTest {
         OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(request, oauth2UserAuthentication);
         ScopePathType requiredScope = ScopePathType.ORCID_BIO_EXTERNAL_IDENTIFIERS_CREATE;
         OrcidMessage orcidMessage = getOrcidMessage();
-        String messageOrcid = orcidMessage.getOrcidProfile().getOrcid().getValue();
+        String messageOrcid = orcidMessage.getOrcidProfile().extractOrcidNumber();
         defaultPermissionChecker.checkPermissions(oAuth2Authentication, requiredScope, messageOrcid, orcidMessage);
     }
 
@@ -100,7 +104,7 @@ public class DefaultPermissionCheckerTest extends DBUnitTest {
         OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(request, oauth2UserAuthentication);
         ScopePathType requiredScope = ScopePathType.ORCID_BIO_EXTERNAL_IDENTIFIERS_CREATE;
         OrcidMessage orcidMessage = getOrcidMessage();
-        String messageOrcid = orcidMessage.getOrcidProfile().getOrcid().getValue();
+        String messageOrcid = orcidMessage.getOrcidProfile().extractOrcidNumber();
         defaultPermissionChecker.checkPermissions(oAuth2Authentication, requiredScope, messageOrcid, orcidMessage);
     }
 
@@ -115,8 +119,8 @@ public class DefaultPermissionCheckerTest extends DBUnitTest {
         OAuth2Authentication oAuth2Authentication = new OAuth2Authentication(request, null);
         ScopePathType requiredScope = ScopePathType.ORCID_BIO_EXTERNAL_IDENTIFIERS_CREATE;
         OrcidMessage orcidMessage = getOrcidMessage();
-        orcidMessage.getOrcidProfile().getOrcid().setValue("4444-4444-4444-4447");
-        String messageOrcid = orcidMessage.getOrcidProfile().getOrcid().getValue();
+        orcidMessage.getOrcidProfile().setOrcidId(orcidUrlManager.orcidNumberToOrcidId("4444-4444-4444-4447"));
+        String messageOrcid = orcidMessage.getOrcidProfile().extractOrcidNumber();
         defaultPermissionChecker.checkPermissions(oAuth2Authentication, requiredScope, messageOrcid, orcidMessage);
     }
 

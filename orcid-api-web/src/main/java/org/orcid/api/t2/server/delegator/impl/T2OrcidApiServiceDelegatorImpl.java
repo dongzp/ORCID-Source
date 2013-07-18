@@ -344,8 +344,8 @@ public class T2OrcidApiServiceDelegatorImpl extends OrcidApiServiceDelegatorImpl
     }
 
     private Response getCreatedResponse(UriInfo uriInfo, String requested, OrcidProfile profile) {
-        if (profile != null && profile.getOrcid() != null && StringUtils.isNotBlank(profile.getOrcid().getValue())) {
-            URI uri = uriInfo.getBaseUriBuilder().path("/").path(requested).build(profile.getOrcid().getValue());
+        if (profile != null && StringUtils.isNotBlank(profile.extractOrcidNumber())) {
+            URI uri = uriInfo.getBaseUriBuilder().path("/").path(requested).build(profile.extractOrcidNumber());
             return Response.created(uri).build();
         } else {
             throw new OrcidNotFoundException("Cannot find ORCID");
@@ -383,8 +383,7 @@ public class T2OrcidApiServiceDelegatorImpl extends OrcidApiServiceDelegatorImpl
                 OrcidSearchResult filteredSearchResult = new OrcidSearchResult();
                 filteredSearchResult.setRelevancyScore(searchResult.getRelevancyScore());
                 OrcidProfile filteredProfile = new OrcidProfile();
-                String retrievedOrcid = searchResult.getOrcidProfile().getOrcid().getValue();
-                filteredProfile.setOrcid(retrievedOrcid);
+                filteredProfile.setOrcidId(searchResult.getOrcidProfile().getOrcidId());
                 filteredProfile.setOrcidBio(searchResult.getOrcidProfile().getOrcidBio());
                 filteredSearchResult.setOrcidProfile(filteredProfile);
                 filteredResults.add(filteredSearchResult);

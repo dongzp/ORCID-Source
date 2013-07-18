@@ -25,7 +25,6 @@
     <!-- Unable to connect to ORCID, no matching researchers, etc. -->
     <!-- <error-desc>No researcher found.</error-desc> -->
     <orcid-profile>
-        <orcid>4444-4444-4444-4446</orcid>
         <orcid-id>http://orcid.org/4444-4444-4444-4446</orcid-id>
         <orcid-history>
             <creation-method>API</creation-method>
