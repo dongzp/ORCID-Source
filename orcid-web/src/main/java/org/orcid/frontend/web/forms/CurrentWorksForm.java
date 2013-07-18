@@ -78,9 +78,9 @@ public class CurrentWorksForm {
         return getOrcidProfile(orcid, currentWorks);
     }
 
-    public OrcidProfile getOrcidProfile(String orcid, List<CurrentWork> works) {
+    public OrcidProfile getOrcidProfile(String orcidId, List<CurrentWork> works) {
         OrcidProfile orcidProfile = new OrcidProfile();
-        orcidProfile.setOrcid(orcid);
+        orcidProfile.setOrcidId(orcidId);
         if (works != null && !works.isEmpty()) {
             OrcidActivities orcidActivities = new OrcidActivities();
             orcidProfile.setOrcidActivities(orcidActivities);

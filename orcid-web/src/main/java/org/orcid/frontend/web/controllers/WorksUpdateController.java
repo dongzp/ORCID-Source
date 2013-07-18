@@ -203,7 +203,7 @@ public class WorksUpdateController extends BaseWorkspaceController {
     @RequestMapping(value = "/save-current-works", method = RequestMethod.POST)
     public String saveCurrentWorks(HttpServletRequest request, @ModelAttribute CurrentWorksForm currentWorksForm) {
         sanitizeCurrentWorks(currentWorksForm.getCurrentWorks());
-        OrcidProfile worksProfile = currentWorksForm.getOrcidProfile(getCurrentUserOrcid());
+        OrcidProfile worksProfile = currentWorksForm.getOrcidProfile(getCurrentUser().getEffectiveProfile().getOrcidId());
         OrcidProfile updatedProfile = orcidProfileManager.updateOrcidWorks(worksProfile);
         getCurrentUser().setEffectiveProfile(updatedProfile);
         request.getSession().removeAttribute(WORKS_RESULTS_ATTRIBUTE);
