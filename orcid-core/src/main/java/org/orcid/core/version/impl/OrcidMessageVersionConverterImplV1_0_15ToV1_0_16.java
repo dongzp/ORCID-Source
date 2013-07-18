@@ -55,7 +55,25 @@ public class OrcidMessageVersionConverterImplV1_0_15ToV1_0_16 implements OrcidMe
             return null;
         }
         orcidMessage.setMessageVersion(FROM_VERSION);
+        downgradeProfile(orcidMessage.getOrcidProfile());
+        downgradeSearchResults(orcidMessage.getOrcidSearchResults());
         return orcidMessage;
+    }
+
+    private void downgradeSearchResults(OrcidSearchResults orcidSearchResults) {
+        if (orcidSearchResults != null) {
+            for (OrcidSearchResult searchResult : orcidSearchResults.getOrcidSearchResult()) {
+                downgradeProfile(searchResult.getOrcidProfile());
+            }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void downgradeProfile(OrcidProfile orcidProfile) {
+        if (orcidProfile != null) {
+            String orcid = orcidProfile.extractOrcidNumber();
+            orcidProfile.setOrcid(orcid);
+        }
     }
 
     @Override
@@ -77,6 +95,7 @@ public class OrcidMessageVersionConverterImplV1_0_15ToV1_0_16 implements OrcidMe
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void upgradeProfile(OrcidProfile orcidProfile) {
         if (orcidProfile != null) {
             Orcid orcid = orcidProfile.getOrcid();
