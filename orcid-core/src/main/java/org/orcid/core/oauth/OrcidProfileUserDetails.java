@@ -61,6 +61,14 @@ public class OrcidProfileUserDetails implements UserDetails {
         this.password = password;
     }
     
+    public OrcidProfileUserDetails(String orcid, String primaryEmail, String password, OrcidType orcidType) {
+        this.realOrcid = orcid;
+        this.effectiveOrcid = orcid;
+        this.primaryEmail = primaryEmail;
+        this.password = password;
+        this.orcidType = orcidType;
+    }
+    
     public OrcidProfileUserDetails(String orcid, String primaryEmail, String password, OrcidType orcidType, ClientType clientType, GroupType groupType) {
         this.realOrcid = orcid;
         this.effectiveOrcid = orcid;
@@ -113,6 +121,8 @@ public class OrcidProfileUserDetails implements UserDetails {
                 result = Arrays.asList(OrcidWebRole.ROLE_PREMIUM_UPDATER);
                 break;
             }
+        } else if(orcidType.equals(OrcidType.ADMIN)) {
+        	result = Arrays.asList(OrcidWebRole.ROLE_ADMIN);
         } else {
         	result = Arrays.asList(OrcidWebRole.ROLE_USER);
         }

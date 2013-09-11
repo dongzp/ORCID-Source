@@ -44,6 +44,7 @@ import org.orcid.jaxb.model.clientgroup.GroupType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{http://www.orcid.org/ns/orcid}orcid" minOccurs="0"/>
+ *         &lt;element ref="{http://www.orcid.org/ns/orcid}orcid-deprecated" minOccurs="0"/>
  *         &lt;element ref="{http://www.orcid.org/ns/orcid}orcid-history" minOccurs="0"/>
  *         &lt;element ref="{http://www.orcid.org/ns/orcid}orcid-bio" minOccurs="0"/>
  *         &lt;element ref="{http://www.orcid.org/ns/orcid}orcid-activities" minOccurs="0"/>
@@ -60,437 +61,485 @@ import org.orcid.jaxb.model.clientgroup.GroupType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "orcid", "orcidId", "orcidPreferences", "orcidHistory", "orcidBio", "orcidActivities", "orcidInternal" })
+@XmlType(name = "", propOrder = { "orcid", "orcidId", "orcidDeprecated",
+		"orcidPreferences", "orcidHistory", "orcidBio", "orcidActivities",
+		"orcidInternal" })
 @XmlRootElement(name = "orcid-profile")
 public class OrcidProfile implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected Orcid orcid;
+	private static final long serialVersionUID = 1L;
+	protected Orcid orcid;
 
-    @XmlElement(name = "orcid-id")
-    protected String orcidId;
+	@XmlElement(name = "orcid-id")
+	protected String orcidId;
 
-    @XmlElement(name = "orcid-preferences")
-    private OrcidPreferences orcidPreferences;
+	@XmlElement(name = "orcid-deprecated")
+	private OrcidDeprecated orcidDeprecated;
 
-    @XmlElement(name = "orcid-history")
-    protected OrcidHistory orcidHistory;
+	@XmlElement(name = "orcid-preferences")
+	private OrcidPreferences orcidPreferences;
 
-    @XmlElement(name = "orcid-bio")
-    protected OrcidBio orcidBio;
+	@XmlElement(name = "orcid-history")
+	protected OrcidHistory orcidHistory;
 
-    @XmlElement(name = "orcid-activities")
-    protected OrcidActivities orcidActivities;
+	@XmlElement(name = "orcid-bio")
+	protected OrcidBio orcidBio;
 
-    @XmlElement(name = "orcid-internal")
-    protected OrcidInternal orcidInternal;
+	@XmlElement(name = "orcid-activities")
+	protected OrcidActivities orcidActivities;
 
-    @XmlAttribute
-    protected OrcidType type;
+	@XmlElement(name = "orcid-internal")
+	protected OrcidInternal orcidInternal;
 
-    @XmlAttribute(name = "group-type")
-    protected GroupType groupType;
-    
-    @XmlAttribute(name = "client-type")
-    protected ClientType clientType;
-    
-    // TODO: Look into where this should be
-    @XmlTransient
-    private String password;
+	@XmlAttribute
+	protected OrcidType type;
 
-    @XmlTransient
-    private String verificationCode;
+	@XmlAttribute(name = "group-type")
+	protected GroupType groupType;
 
-    @XmlTransient
-    private String securityQuestionAnswer;
+	@XmlAttribute(name = "client-type")
+	protected ClientType clientType;
 
-    /**
-     * Gets the value of the orcid property.
-     * 
-     * @return possible object is {@link Orcid }
-     * 
-     */
-    public Orcid getOrcid() {
-        return orcid;
-    }
+	// TODO: Look into where this should be
+	@XmlTransient
+	private String password;
 
-    /**
-     * Sets the value of the orcid property.
-     * 
-     * @param value
-     *            allowed object is {@link Orcid }
-     * 
-     */
-    public void setOrcid(Orcid value) {
-        this.orcid = value;
-    }
+	@XmlTransient
+	private String verificationCode;
 
-    public String getOrcidId() {
-        return this.orcidId; // orcidId;
-    }
+	@XmlTransient
+	private String securityQuestionAnswer;
 
-    public void setOrcidId(String value) {
-        this.orcidId = value;
-    }
+	/**
+	 * Gets the value of the orcid property.
+	 * 
+	 * @return possible object is {@link Orcid }
+	 * 
+	 */
+	public Orcid getOrcid() {
+		return orcid;
+	}
 
-    /**
-     * Sets the value of the orcid property.
-     * 
-     * @param value
-     *            allowed object is {@link String }
-     * 
-     */
-    public void setOrcid(String value) {
-        this.orcid = new Orcid(value);
-    }
+	/**
+	 * Sets the value of the orcid property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link Orcid }
+	 * 
+	 */
+	public void setOrcid(Orcid value) {
+		this.orcid = value;
+	}
 
-    /**
-     * Gets the value of the orcidHistory property.
-     * 
-     * @return possible object is {@link OrcidHistory }
-     * 
-     */
-    public OrcidHistory getOrcidHistory() {
-        return orcidHistory;
-    }
+	public String getOrcidId() {
+		return this.orcidId; // orcidId;
+	}
 
-    public boolean isDeactivated() {
-        return orcidHistory != null && orcidHistory.getDeactivationDate() != null && orcidHistory.getDeactivationDate().getValue() != null;
-    }
+	public void setOrcidId(String value) {
+		this.orcidId = value;
+	}
 
-    /**
-     * Sets the value of the orcidHistory property.
-     * 
-     * @param value
-     *            allowed object is {@link OrcidHistory }
-     * 
-     */
-    public void setOrcidHistory(OrcidHistory value) {
-        this.orcidHistory = value;
-    }
+	/**
+	 * Sets the value of the orcid property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link String }
+	 * 
+	 */
+	public void setOrcid(String value) {
+		this.orcid = new Orcid(value);
+	}
 
-    /**
-     * Gets the value of the orcidBio property.
-     * 
-     * @return possible object is {@link OrcidBio }
-     * 
-     */
-    public OrcidBio getOrcidBio() {
-        return orcidBio;
-    }
+	/**
+	 * Gets the value of the orcidHistory property.
+	 * 
+	 * @return possible object is {@link OrcidHistory }
+	 * 
+	 */
+	public OrcidHistory getOrcidHistory() {
+		return orcidHistory;
+	}
 
-    /**
-     * Sets the value of the orcidBio property.
-     * 
-     * @param value
-     *            allowed object is {@link OrcidBio }
-     * 
-     */
-    public void setOrcidBio(OrcidBio value) {
-        this.orcidBio = value;
-    }
+	public boolean isDeactivated() {
+		return orcidHistory != null
+				&& orcidHistory.getDeactivationDate() != null
+				&& orcidHistory.getDeactivationDate().getValue() != null;
+	}
 
-    /**
-     * 
-     * @return the activites contained in this record
-     */
-    public OrcidActivities getOrcidActivities() {
-        return orcidActivities;
-    }
+	/**
+	 * Sets the value of the orcidHistory property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link OrcidHistory }
+	 * 
+	 */
+	public void setOrcidHistory(OrcidHistory value) {
+		this.orcidHistory = value;
+	}
 
-    /**
-     * @param orcidActivities
-     *            set the activities for this record
-     */
-    public void setOrcidActivities(OrcidActivities orcidActivities) {
-        this.orcidActivities = orcidActivities;
-    }
+	/**
+	 * Gets the value of the orcidBio property.
+	 * 
+	 * @return possible object is {@link OrcidBio }
+	 * 
+	 */
+	public OrcidBio getOrcidBio() {
+		return orcidBio;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public OrcidPatents retrieveOrcidPatents() {
-        return orcidActivities != null ? orcidActivities.getOrcidPatents() : null;
-    }
+	/**
+	 * Sets the value of the orcidBio property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link OrcidBio }
+	 * 
+	 */
+	public void setOrcidBio(OrcidBio value) {
+		this.orcidBio = value;
+	}
 
-    /**
-     * 
-     * @param orcidGrants
-     */
-    public void setOrcidGrants(OrcidGrants orcidGrants) {
-        if (orcidActivities == null) {
-            orcidActivities = new OrcidActivities();
-        }
-        this.orcidActivities.setOrcidGrants(orcidGrants);
-    }
+	/**
+	 * 
+	 * @return the activites contained in this record
+	 */
+	public OrcidActivities getOrcidActivities() {
+		return orcidActivities;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public OrcidGrants retrieveOrcidGrants() {
-        return orcidActivities != null ? orcidActivities.getOrcidGrants() : null;
-    }
+	/**
+	 * @param orcidActivities
+	 *            set the activities for this record
+	 */
+	public void setOrcidActivities(OrcidActivities orcidActivities) {
+		this.orcidActivities = orcidActivities;
+	}
 
-    /**
-     * 
-     * @param orcidPatents
-     */
-    public void setOrcidPatents(OrcidPatents orcidPatents) {
-        if (orcidActivities == null) {
-            orcidActivities = new OrcidActivities();
-        }
-        this.orcidActivities.setOrcidPatents(orcidPatents);
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public OrcidPatents retrieveOrcidPatents() {
+		return orcidActivities != null ? orcidActivities.getOrcidPatents()
+				: null;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public OrcidWorks retrieveOrcidWorks() {
-        return orcidActivities != null ? orcidActivities.getOrcidWorks() : null;
-    }
+	/**
+	 * 
+	 * @param orcidGrants
+	 */
+	public void setOrcidGrants(OrcidGrants orcidGrants) {
+		if (orcidActivities == null) {
+			orcidActivities = new OrcidActivities();
+		}
+		this.orcidActivities.setOrcidGrants(orcidGrants);
+	}
 
-    /**
-     * 
-     * @param orcidWorks
-     */
-    public void setOrcidWorks(OrcidWorks orcidWorks) {
-        if (orcidActivities == null) {
-            orcidActivities = new OrcidActivities();
-        }
-        this.orcidActivities.setOrcidWorks(orcidWorks);
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public OrcidGrants retrieveOrcidGrants() {
+		return orcidActivities != null ? orcidActivities.getOrcidGrants()
+				: null;
+	}
 
-    /**
-     * 
-     * @param orcidWorks
-     */
-    public void setOrcidWork(List<OrcidWork> orcidWorks) {
-        if (orcidActivities == null) {
-            orcidActivities = new OrcidActivities();
-        }
-        this.orcidActivities.getOrcidWorks().setOrcidWork(orcidWorks);
-    }
+	/**
+	 * 
+	 * @param orcidPatents
+	 */
+	public void setOrcidPatents(OrcidPatents orcidPatents) {
+		if (orcidActivities == null) {
+			orcidActivities = new OrcidActivities();
+		}
+		this.orcidActivities.setOrcidPatents(orcidPatents);
+	}
 
-    /**
-     * Gets the value of the orcidInternal property.
-     * 
-     * @return possible object is {@link OrcidInternal }
-     * 
-     */
-    public OrcidInternal getOrcidInternal() {
-        return orcidInternal;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public OrcidWorks retrieveOrcidWorks() {
+		return orcidActivities != null ? orcidActivities.getOrcidWorks() : null;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	/**
+	 * 
+	 * @param orcidWorks
+	 */
+	public void setOrcidWorks(OrcidWorks orcidWorks) {
+		if (orcidActivities == null) {
+			orcidActivities = new OrcidActivities();
+		}
+		this.orcidActivities.setOrcidWorks(orcidWorks);
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	/**
+	 * 
+	 * @param orcidWorks
+	 */
+	public void setOrcidWork(List<OrcidWork> orcidWorks) {
+		if (orcidActivities == null) {
+			orcidActivities = new OrcidActivities();
+		}
+		this.orcidActivities.getOrcidWorks().setOrcidWork(orcidWorks);
+	}
 
-    public String getVerificationCode() {
-        return verificationCode;
-    }
+	/**
+	 * Gets the value of the orcidInternal property.
+	 * 
+	 * @return possible object is {@link OrcidInternal }
+	 * 
+	 */
+	public OrcidInternal getOrcidInternal() {
+		return orcidInternal;
+	}
 
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public String getSecurityQuestionAnswer() {
-        return securityQuestionAnswer;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public void setSecurityQuestionAnswer(String securityQuestionAnswer) {
-        this.securityQuestionAnswer = securityQuestionAnswer;
-    }
+	public String getVerificationCode() {
+		return verificationCode;
+	}
 
-    /**
-     * Sets the value of the orcidInternal property.
-     * 
-     * @param value
-     *            allowed object is {@link OrcidInternal }
-     * 
-     */
-    public void setOrcidInternal(OrcidInternal value) {
-        this.orcidInternal = value;
-    }
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
 
-    /**
-     * Gets the value of the type property.
-     * 
-     * @return possible object is {@link OrcidType }
-     * 
-     */
-    public OrcidType getType() {
-        if (type == null) {
-            return OrcidType.USER;
-        } else {
-            return type;
-        }
-    }
+	public String getSecurityQuestionAnswer() {
+		return securityQuestionAnswer;
+	}
 
-    /**
-     * Sets the value of the type property.
-     * 
-     * @param value
-     *            allowed object is {@link OrcidType }
-     * 
-     */
-    public void setType(OrcidType value) {
-        this.type = value;
-    }
+	public void setSecurityQuestionAnswer(String securityQuestionAnswer) {
+		this.securityQuestionAnswer = securityQuestionAnswer;
+	}
 
-    /**
-     * Gets the value of the groupType property.
-     * 
-     * @return possible object is {@link GroupType }
-     * 
-     */
-    public GroupType getGroupType() {
-        return groupType;
-    }
+	/**
+	 * Sets the value of the orcidInternal property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link OrcidInternal }
+	 * 
+	 */
+	public void setOrcidInternal(OrcidInternal value) {
+		this.orcidInternal = value;
+	}
 
-    /**
-     * Sets the value of the groupType property.
-     * 
-     * @param value
-     *            allowed object is {@link GroupType }
-     * 
-     */
-    public void setGroupType(GroupType value) {
-        this.groupType = value;
-    }
-    
-    /**
-     * Gets the value of the clientType property.
-     * 
-     * @return possible object is {@link ClientType }
-     * 
-     */
-    public ClientType getClientType() {
-        return clientType;
-    }
+	/**
+	 * Gets the value of the type property.
+	 * 
+	 * @return possible object is {@link OrcidType }
+	 * 
+	 */
+	public OrcidType getType() {
+		if (type == null) {
+			return OrcidType.USER;
+		} else {
+			return type;
+		}
+	}
 
-    /**
-     * Sets the value of the clientType property.
-     * 
-     * @param value
-     *            allowed object is {@link ClientType }
-     * 
-     */
-    public void setClientType(ClientType value) {
-        this.clientType = value;
-    }
-    
-    public void downgradeToBioOnly() {
-        setOrcidActivities(null);
-    }
+	/**
+	 * Sets the value of the type property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link OrcidType }
+	 * 
+	 */
+	public void setType(OrcidType value) {
+		this.type = value;
+	}
 
-    public void downgradeToExternalIdentifiersOnly() {
-        downgradeToBioOnly();
-        if (orcidBio != null) {
-            orcidBio.downGradeToExternalIdentifiersOnly();
-        }
-    }
+	/**
+	 * Gets the value of the groupType property.
+	 * 
+	 * @return possible object is {@link GroupType }
+	 * 
+	 */
+	public GroupType getGroupType() {
+		return groupType;
+	}
 
-    public void downgradeToWorksOnly() {
-        setOrcidBio(null);
-        if (orcidActivities != null) {
-            orcidActivities.downgradeToWorksOnly();
-        }
-    }
+	/**
+	 * Sets the value of the groupType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link GroupType }
+	 * 
+	 */
+	public void setGroupType(GroupType value) {
+		this.groupType = value;
+	}
 
-    @Override
-    public String toString() {
-        return OrcidMessage.convertToString(this);
-    }
+	/**
+	 * Gets the value of the clientType property.
+	 * 
+	 * @return possible object is {@link ClientType }
+	 * 
+	 */
+	public ClientType getClientType() {
+		return clientType;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((orcid == null) ? 0 : orcid.hashCode());
-        result = prime * result + ((orcidBio == null) ? 0 : orcidBio.hashCode());
-        result = prime * result + ((orcidHistory == null) ? 0 : orcidHistory.hashCode());
-        result = prime * result + ((orcidInternal == null) ? 0 : orcidInternal.hashCode());
-        result = prime * result + ((orcidActivities == null) ? 0 : orcidActivities.hashCode());
-        result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((securityQuestionAnswer == null) ? 0 : securityQuestionAnswer.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((groupType == null) ? 0 : groupType.hashCode());
-        result = prime * result + ((clientType == null) ? 0 : clientType.hashCode());
-        result = prime * result + ((verificationCode == null) ? 0 : verificationCode.hashCode());
-        return result;
-    }
+	/**
+	 * Sets the value of the clientType property.
+	 * 
+	 * @param value
+	 *            allowed object is {@link ClientType }
+	 * 
+	 */
+	public void setClientType(ClientType value) {
+		this.clientType = value;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        OrcidProfile other = (OrcidProfile) obj;
-        if (orcid == null) {
-            if (other.orcid != null)
-                return false;
-        } else if (!orcid.equals(other.orcid))
-            return false;
-        if (orcidBio == null) {
-            if (other.orcidBio != null)
-                return false;
-        } else if (!orcidBio.equals(other.orcidBio))
-            return false;
-        if (orcidHistory == null) {
-            if (other.orcidHistory != null)
-                return false;
-        } else if (!orcidHistory.equals(other.orcidHistory))
-            return false;
-        if (orcidInternal == null) {
-            if (other.orcidInternal != null)
-                return false;
-        } else if (!orcidInternal.equals(other.orcidInternal))
-            return false;
-        if (orcidActivities == null) {
-            if (other.orcidActivities != null)
-                return false;
-        } else if (!orcidActivities.equals(other.orcidActivities))
-            return false;
-        if (password == null) {
-            if (other.password != null)
-                return false;
-        } else if (!password.equals(other.password))
-            return false;
-        if (securityQuestionAnswer == null) {
-            if (other.securityQuestionAnswer != null)
-                return false;
-        } else if (!securityQuestionAnswer.equals(other.securityQuestionAnswer))
-            return false;
-        if (type != other.type)
-            return false;
-        if(groupType != other.groupType)
-            return false;
-        if(clientType != other.clientType)
-            return false;
-        if (verificationCode == null) {
-            if (other.verificationCode != null)
-                return false;
-        } else if (!verificationCode.equals(other.verificationCode))
-            return false;
-        return true;
-    }
+	/*
+	 * Gets the value of the orcidDeprecated property.
+	 * 
+	 * @return possible object is {@link OrcidDeprecated }
+	 */
+	public OrcidDeprecated getOrcidDeprecated() {
+		return orcidDeprecated;
+	}
 
-    public OrcidPreferences getOrcidPreferences() {
-        return orcidPreferences;
-    }
+	/**
+	 * Sets the value of the orcidDeprecated property.
+	 * 
+	 * @param orcidDeprecated
+	 *            allowed object is {@link orcidDeprecated }
+	 * */
+	public void setOrcidDeprecated(OrcidDeprecated orcidDeprecated) {
+		this.orcidDeprecated = orcidDeprecated;
+	}
 
-    public void setOrcidPreferences(OrcidPreferences orcidPreferences) {
-        this.orcidPreferences = orcidPreferences;
-    }
+	public void downgradeToBioOnly() {
+		setOrcidActivities(null);
+	}
+
+	public void downgradeToExternalIdentifiersOnly() {
+		downgradeToBioOnly();
+		if (orcidBio != null) {
+			orcidBio.downGradeToExternalIdentifiersOnly();
+		}
+	}
+
+	public void downgradeToWorksOnly() {
+		setOrcidBio(null);
+		if (orcidActivities != null) {
+			orcidActivities.downgradeToWorksOnly();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return OrcidMessage.convertToString(this);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((orcid == null) ? 0 : orcid.hashCode());
+		result = prime * result
+				+ ((orcidBio == null) ? 0 : orcidBio.hashCode());
+		result = prime * result
+				+ ((orcidHistory == null) ? 0 : orcidHistory.hashCode());
+		result = prime * result
+				+ ((orcidInternal == null) ? 0 : orcidInternal.hashCode());
+		result = prime * result
+				+ ((orcidActivities == null) ? 0 : orcidActivities.hashCode());
+		result = prime * result
+				+ ((password == null) ? 0 : password.hashCode());
+		result = prime
+				* result
+				+ ((securityQuestionAnswer == null) ? 0
+						: securityQuestionAnswer.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result
+				+ ((groupType == null) ? 0 : groupType.hashCode());
+		result = prime * result
+				+ ((clientType == null) ? 0 : clientType.hashCode());
+		result = prime
+				* result
+				+ ((verificationCode == null) ? 0 : verificationCode.hashCode());
+		result = prime * result
+				+ ((orcidDeprecated == null) ? 0 : orcidDeprecated.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrcidProfile other = (OrcidProfile) obj;
+		if (orcid == null) {
+			if (other.orcid != null)
+				return false;
+		} else if (!orcid.equals(other.orcid))
+			return false;
+		if (orcidBio == null) {
+			if (other.orcidBio != null)
+				return false;
+		} else if (!orcidBio.equals(other.orcidBio))
+			return false;
+		if (orcidHistory == null) {
+			if (other.orcidHistory != null)
+				return false;
+		} else if (!orcidHistory.equals(other.orcidHistory))
+			return false;
+		if (orcidInternal == null) {
+			if (other.orcidInternal != null)
+				return false;
+		} else if (!orcidInternal.equals(other.orcidInternal))
+			return false;
+		if (orcidActivities == null) {
+			if (other.orcidActivities != null)
+				return false;
+		} else if (!orcidActivities.equals(other.orcidActivities))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (securityQuestionAnswer == null) {
+			if (other.securityQuestionAnswer != null)
+				return false;
+		} else if (!securityQuestionAnswer.equals(other.securityQuestionAnswer))
+			return false;
+		if (type != other.type)
+			return false;
+		if (groupType != other.groupType)
+			return false;
+		if (clientType != other.clientType)
+			return false;
+		if (verificationCode == null) {
+			if (other.verificationCode != null)
+				return false;
+		} else if (!verificationCode.equals(other.verificationCode))
+			return false;
+		if (orcidDeprecated == null) {
+			if (other.getOrcidDeprecated() != null)
+				return false;
+		} else if (!orcidDeprecated.equals(other.getOrcidDeprecated()))
+			return false;
+
+		return true;
+	}
+
+	public OrcidPreferences getOrcidPreferences() {
+		return orcidPreferences;
+	}
+
+	public void setOrcidPreferences(OrcidPreferences orcidPreferences) {
+		this.orcidPreferences = orcidPreferences;
+	}
 
 }

@@ -68,6 +68,7 @@ public class BaseControllerTest extends DBUnitTest {
         if (orcidProfile == null) {
             orcidProfile = getOrcidProfile();
         }
+
         OrcidProfileUserDetails details = null;
         if(orcidProfile.getType() != null){        	
         	details = new OrcidProfileUserDetails(orcidProfile.getOrcid().getValue(), orcidProfile.getOrcidBio().getContactDetails().getEmail()
@@ -76,6 +77,7 @@ public class BaseControllerTest extends DBUnitTest {
         	details = new OrcidProfileUserDetails(orcidProfile.getOrcid().getValue(), orcidProfile.getOrcidBio().getContactDetails().getEmail()
                     .get(0).getValue(), orcidProfile.getOrcidInternal().getSecurityDetails().getEncryptedPassword().getContent());
         }
+
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(details, "4444-4444-4444-4446", Arrays.asList(OrcidWebRole.ROLE_USER));
         return auth;
     }
