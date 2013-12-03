@@ -42,6 +42,15 @@ public interface WorkManager {
     List<MinimizedWorkEntity> findWorks(String orcid);
     
     /**
+     * Find the public works for a specific user
+     * 
+     * @param orcid
+     * 		the Id of the user
+     * @return the list of works associated to the specific user 
+     * */
+    List<MinimizedWorkEntity> findPublicWorks(String orcid);
+    
+    /**
      * Loads work information
      * 
      * @param orcid
@@ -50,5 +59,5 @@ public interface WorkManager {
      * 		the Id of the work
      * @return a workInfo object with the work information
      * */
-    WorkInfoEntity loadWorkInfo(String orcid, String workId);
+    Work loadWorkInfo(String orcid, String workId);
 }

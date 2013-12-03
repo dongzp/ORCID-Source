@@ -34,6 +34,7 @@ import org.orcid.persistence.jpa.entities.ProfileWorkEntity;
 import org.orcid.persistence.jpa.entities.WorkEntity;
 import org.orcid.persistence.jpa.entities.custom.MinimizedWorkEntity;
 import org.orcid.persistence.jpa.entities.custom.WorkInfoEntity;
+import org.orcid.pojo.ajaxForm.Work;
 
 public class WorkManagerImpl implements WorkManager {
 
@@ -68,6 +69,17 @@ public class WorkManagerImpl implements WorkManager {
 		return workDao.findWorks(orcid);
 	}
 
+	/**
+     * Find the public works for a specific user
+     * 
+     * @param orcid
+     * 		the Id of the user
+     * @return the list of works associated to the specific user 
+     * */
+    public List<MinimizedWorkEntity> findPublicWorks(String orcid) {
+    	return workDao.findPublicWorks(orcid);
+    }
+	
 	/**
 	 * Loads work information
 	 * 

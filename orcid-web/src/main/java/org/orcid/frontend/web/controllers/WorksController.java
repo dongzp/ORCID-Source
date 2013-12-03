@@ -737,7 +737,7 @@ public class WorksController extends BaseWorkspaceController {
      */
     private List<String> createWorksIdList(HttpServletRequest request) {
         OrcidProfile currentProfile = getEffectiveProfile();
-        List<MinimizedWorkEntity> works = workManager.findWorks(currentProfile.getOrcid().getValue());
+        List<MinimizedWorkEntity> works = workManager.findWorks(currentProfile.getOrcid().getValue()); 
         HashMap<String, Work> worksMap = new HashMap<String, Work>();
         List<String> workIds = new ArrayList<String>();
         if (works != null) {

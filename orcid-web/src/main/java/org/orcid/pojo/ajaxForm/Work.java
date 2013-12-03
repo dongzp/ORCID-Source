@@ -104,6 +104,12 @@ public class Work implements ErrorsInterface, Serializable {
         return w;	
     }
     
+    public static Work valueOf(WorkInfoEntity workInfo, ProfileWorkEntity profileWork, WorkContributors workContributors) {
+    	Work work = new Work();
+    	
+    	return work;
+    }
+    
     public static Work valueOf(WorkInfoEntity workInfo) {
     	Work w = new Work();
     	// Set put code

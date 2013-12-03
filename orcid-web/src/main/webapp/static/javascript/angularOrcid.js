@@ -1627,6 +1627,35 @@ function PublicWorkCtrl($scope, $compile, worksSrvc) {
 		
 	$scope.worksToAddIds = orcidVar.workIds;	
 	$scope.addWorkToScope();	
+	
+	$scope.loadWorkInfo = function(putCode, event) {
+		if($scope.worksInfo[putCode] == null) {		
+			$.ajax({
+				url: $('body').data('baseurl') + 'works/getWorkInfo.json?workId=' + putCode,	        
+		        dataType: 'json',
+		        success: function(data) {
+		        	
+		        	safeApply($scope, function () {
+		        		removeBadContributors(data);
+						addBibtexCitation($scope,data);
+						$scope.worksInfo[putCode] = data;
+						$(event.target).next().css('display','inline');		        		
+		        	});		        	
+		        }
+			}).fail(function(){
+				// something bad is happening!
+		    	console.log("error fetching works");
+			});
+		} else {
+			safeApply($scope, function () {
+				$(event.target).next().css('display','inline');
+			});			
+		}
+	};			
+	
+	$scope.closePopover = function(event) {
+		$('.more-info-container').css('display', 'none');
+	};
 }
 
 function WorkCtrl($scope, $compile, worksSrvc, workspaceSrvc) {
